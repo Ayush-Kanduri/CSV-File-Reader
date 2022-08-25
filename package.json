@@ -35,6 +35,7 @@
 		"express": "^4.18.1",
 		"express-ejs-layouts": "^2.5.1",
 		"mongoose": "^6.5.3",
+		"node-sass-middleware": "^1.0.1",
 		"nodemon": "^2.0.19"
 	}
 }

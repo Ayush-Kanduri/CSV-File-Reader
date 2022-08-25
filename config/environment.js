@@ -4,6 +4,7 @@ const dotenv = require("dotenv").config();
 //Development Environment
 const development = {
 	name: "development",
+	asset_path: process.env.DEVELOPMENT_ASSET_PATH,
 	db: process.env.DEVELOPMENT_DB,
 	db_name: process.env.DEVELOPMENT_DB_NAME,
 	deployment: process.env.DEVELOPMENT_DEPLOYMENT,
@@ -12,6 +13,7 @@ const development = {
 //Production Environment
 const production = {
 	name: "production",
+	asset_path: process.env.ASSET_PATH,
 	db: process.env.DB,
 	db_name: process.env.DB_NAME,
 	deployment: process.env.DEPLOYMENT,
