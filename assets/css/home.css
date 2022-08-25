@@ -1,0 +1,76 @@
+#content {
+  width: 85%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start; }
+  #content .upload {
+    margin-top: 1rem;
+    width: 100%;
+    height: 150px;
+    min-height: 150px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start; }
+    #content .upload form {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      flex-wrap: wrap; }
+      #content .upload form .submit {
+        background-color: var(--sidebar-color);
+        color: var(--primary-text-color);
+        font-weight: 600;
+        word-spacing: 0.2rem;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        text-align: center;
+        border-radius: 10px;
+        padding: 15px 66px;
+        text-transform: uppercase; }
+      #content .upload form .upload-wrapper {
+        position: relative;
+        overflow: hidden;
+        display: inline-block; }
+        #content .upload form .upload-wrapper .btn {
+          background-color: var(--secondary-text-color);
+          padding: 15px 45px;
+          text-align: center;
+          text-transform: uppercase;
+          background-size: 200% auto;
+          color: var(--primary-text-color);
+          display: block;
+          border-radius: 10px;
+          flex: 0 0 80%;
+          font-weight: 600;
+          word-spacing: 0.2rem; }
+        #content .upload form .upload-wrapper input[type="file"],
+        #content .upload form .upload-wrapper input[type="file"]::-webkit-file-upload-button {
+          cursor: pointer; }
+        #content .upload form .upload-wrapper input[type="file"] {
+          cursor: pointer;
+          font-size: 100px;
+          position: absolute;
+          left: 0;
+          top: 0;
+          opacity: 0; }
+  #content .table {
+    width: 90%;
+    margin: auto;
+    margin-top: 2rem;
+    overflow-x: scroll; }
+    #content .table table {
+      width: 100%; }
+      #content .table table .heading {
+        background-color: var(--sidebar-color); }
+    #content .table::-webkit-scrollbar {
+      width: 20px; }
+    #content .table::-webkit-scrollbar-track {
+      background-color: var(--primary-text-color); }
+    #content .table::-webkit-scrollbar-thumb {
+      background-color: var(--secondary-text-color);
+      box-shadow: inset 2px 2px 5px 0 rgba(232, 249, 253, 0.5); }

@@ -1,0 +1,22 @@
+<link rel="stylesheet" href="<%= assetPath('css/sidebar.css') %>" />
+<script defer src="<%= assetPath('js/sidebar.js') %>"></script>
+
+<section id="sidebar">
+	<h3>CSV File Reader</h3>
+	<hr />
+	<div class="search input-group mb-5 mt-4">
+		<input
+			type="text"
+			class="form-control"
+			placeholder="Search"
+			aria-label="Search"
+		/>
+	</div>
+	<div class="files">
+		<% for(let i=0; i < 15; i++){ %>
+		<div class="filename">
+			<span>File.csv</span>
+		</div>
+		<% } %>
+	</div>
+</section>
