@@ -8,6 +8,10 @@ const port = process.env.PORT || 8000;
 const cors = require("cors");
 //Requires Express-EJS-Layouts Module
 const expressLayouts = require("express-ejs-layouts");
+//Require the Environment File for getting the Environment Variables
+const env = require("./config/environment");
+//Requires MongoDB
+const db = require("./config/mongoose");
 //Requires the index.js - Main Index Route File, from the Routes Folder.
 const routes = require("./routes/index");
 
