@@ -1,0 +1,28 @@
+-------
+FOLDERS
+-------
+assets  -   css
+        -   js
+        -   images
+        -   scss
+config
+controllers  -  api  -  v1
+                     -  v2
+models
+production_logs
+public
+routes
+server_storage
+uploads
+views
+
+-----
+FILES
+-----
+.env
+.gitignore
+ENV_FORMAT.json
+Folder_Structure.txt
+gulpfile.js
+index.js
+README.md
