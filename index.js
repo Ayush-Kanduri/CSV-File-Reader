@@ -53,6 +53,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 //Middleware - Express App uses Static Files in the Assets Folder
 app.use(express.static(env.asset_path));
+//Middleware - Make the 'uploads' path available to the browser
+app.use("/uploads", express.static(__dirname + "/uploads"));
+//Middleware - Make the 'server_storage' path available to the browser
+app.use("/server_storage", express.static(__dirname + "/server_storage"));
 //Middleware - Express App uses expressLayouts to tell the App that the Views which are going to be rendered belongs to some layout or uses Partials-Layouts.
 app.use(expressLayouts);
 

@@ -43,7 +43,8 @@ main {
   width: 100vw;
   min-height: 100vh;
   display: flex;
-  overflow: scroll; }
+  overflow: scroll;
+  position: relative; }
   main::-webkit-scrollbar {
     display: none;
     overflow: hidden; }

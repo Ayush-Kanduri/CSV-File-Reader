@@ -13,7 +13,8 @@ production_logs
 public
 routes  -  api  -  v1
                 -  v2
-server_storage
+server_storage  -  images
+                -  videos
 uploads
 views
 

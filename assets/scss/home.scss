@@ -5,6 +5,7 @@
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: flex-start;
+	z-index: 50;
 	.upload {
 		margin-top: 1rem;
 		width: 100%;
@@ -67,7 +68,7 @@
 	}
 	.table {
 		width: 90%;
-		// max-width: 500px;
+		// min-width: 400px;
 		margin: auto;
 		margin-top: 2rem;
 		overflow-x: scroll;

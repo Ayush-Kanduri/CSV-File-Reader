@@ -4,7 +4,8 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: flex-start; }
+  align-items: flex-start;
+  z-index: 50; }
   #content .upload {
     margin-top: 1rem;
     width: 100%;

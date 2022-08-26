@@ -45,6 +45,7 @@ main {
 	min-height: 100vh;
 	display: flex;
 	overflow: scroll;
+	position: relative;
 	&::-webkit-scrollbar {
 		display: none;
 		overflow: hidden;
