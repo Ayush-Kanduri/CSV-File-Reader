@@ -1,6 +1,7 @@
 const File = require("../models/file");
 const fs = require("fs");
 const path = require("path");
+const { parse } = require("csv-parse");
 
 //Displays the home page
 module.exports.homepage = async (req, res) => {
@@ -110,3 +111,86 @@ module.exports.delete = async (req, res) => {
 		});
 	}
 };
+
+module.exports.read = async (req, res) => {
+	try {
+		const id = req.params.id;
+		const file = await File.findById(id);
+		const filePath = path.join(__dirname, "..", file.path);
+		const records = [];
+
+		//Initialize the parser
+		const parser = parse(
+			{
+				delimiter: ",",
+				columns: true, // --> Array of Objects
+				//columns: false, --> Array of Arrays
+			},
+			(err, data) => {
+				if (err) {
+					console.log(err);
+					return res.status(500).json({
+						message: "Internal Server Error",
+						error: err.message,
+					});
+				}
+				//Push the Data to the Array
+				records.push(data);
+			}
+		);
+
+		//Read the file
+		fs.createReadStream(filePath).pipe(parser);
+
+		//Wait for the Parser to finish
+		await new Promise((resolve) => {
+			parser.on("finish", () => {
+				resolve();
+			});
+		});
+
+		//Close the readable stream
+		parser.end();
+
+		//Return the Parsed Data
+		return res.status(200).json({
+			message: "File Read Successfully!",
+			data: records[0],
+		});
+	} catch (error) {
+		console.log(error);
+		//Return the Error
+		return res.status(500).json({
+			message: "Internal Server Error",
+			error: error.message,
+		});
+	}
+};
+
+// Array of Arrays //
+//---------------
+//Heading Columns
+//---------------
+// [
+// "id",
+// "location_id",
+// "organization_id",
+// "service_id",
+// "name",
+// "title",
+// "email",
+// "department"
+// ],
+//------------
+//Data Columns
+//------------
+// [
+// 	"1",
+// 	"1",
+// 	"",
+// 	"",
+// 	"Susan Houston",
+// 	"Director of Older Adult Services",
+// 	"",
+// 	""
+// ],

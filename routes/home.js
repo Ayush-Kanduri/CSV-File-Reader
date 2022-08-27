@@ -10,6 +10,8 @@ const homeController = require("../controllers/home_controller");
 router.get("/", homeController.homepage);
 //Access the Home Controller's upload() Function @ '/upload' route.
 router.post("/upload", homeController.upload);
+//Access the Home Controller's read() Function @ '/read/:id' route.
+router.get("/read/:id", homeController.read);
 //Access the Home Controller's delete() Function @ '/delete/:id' route.
 router.delete("/delete/:id", homeController.delete);
 
