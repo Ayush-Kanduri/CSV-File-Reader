@@ -4,43 +4,47 @@
 <%- include('_sidebar.ejs') %>
 <section id="content">
 	<div class="upload">
-		<form action="/upload" method="post" enctype="multipart/form-data">
+		<form
+			action="/upload"
+			method="post"
+			enctype="multipart/form-data"
+			style="gap: 1rem"
+		>
 			<div class="upload-wrapper">
-				<button class="btn">Choose File</button>
+				<button class="btn upload-btn">Choose File</button>
 				<input type="file" name="file" class="file" accept=".csv" />
 			</div>
 			<button type="submit" class="submit btn btn-dark">Upload</button>
 		</form>
 	</div>
 
+	<header><h2>Parsed Data</h2></header>
+
 	<div class="table">
 		<table class="table table-dark table-hover">
 			<thead>
 				<tr>
-					<th scope="col" class="heading">#</th>
-					<th scope="col" class="heading">First</th>
-					<th scope="col" class="heading">Last</th>
-					<th scope="col" class="heading">Handle</th>
-					<th scope="col" class="heading">#</th>
-					<th scope="col" class="heading">First</th>
-					<th scope="col" class="heading">Last</th>
-					<th scope="col" class="heading">Handle</th>
-                    <th scope="col" class="heading">#</th>
-					<th scope="col" class="heading">First</th>
-					<th scope="col" class="heading">Last</th>
-					<th scope="col" class="heading">Handle</th>
-                    <th scope="col" class="heading">#</th>
-					<th scope="col" class="heading">First</th>
-					<th scope="col" class="heading">Last</th>
-					<th scope="col" class="heading">Handle</th>
-                    <th scope="col" class="heading">#</th>
-					<th scope="col" class="heading">First</th>
-					<th scope="col" class="heading">Last</th>
-					<th scope="col" class="heading">Handle</th>
-                    <th scope="col" class="heading">#</th>
-					<th scope="col" class="heading">First</th>
-					<th scope="col" class="heading">Last</th>
-					<th scope="col" class="heading">Handle</th>
+					<th scope="col" class="heading">
+						#&emsp;<i class="fa-solid fa-sort-up"></i>
+					</th>
+					<th scope="col" class="heading">
+						First&emsp;<i class="fa-solid fa-sort-up"></i>
+					</th>
+					<th scope="col" class="heading">
+						Last&emsp;<i class="fa-solid fa-sort-up"></i>
+					</th>
+					<th scope="col" class="heading">
+						Handle&emsp;<i class="fa-solid fa-sort-up"></i>
+					</th>
+					<th scope="col" class="heading">
+						Work&emsp;<i class="fa-solid fa-sort-up"></i>
+					</th>
+					<th scope="col" class="heading">
+						Profile&emsp;<i class="fa-solid fa-sort-up"></i>
+					</th>
+					<th scope="col" class="heading">
+						Matter&emsp;<i class="fa-solid fa-sort-up"></i>
+					</th>
 				</tr>
 			</thead>
 			<tbody class="table-group-divider">
@@ -52,77 +56,37 @@
 					<th>1</th>
 					<td>Mark</td>
 					<td>Otto</td>
-					<td>@mdo</td>
-                    <th>1</th>
-					<td>Mark</td>
-					<td>Otto</td>
-					<td>@mdo</td>
-                    <th>1</th>
-					<td>Mark</td>
-					<td>Otto</td>
-					<td>@mdo</td>
-                    <th>1</th>
-					<td>Mark</td>
-					<td>Otto</td>
-					<td>@mdo</td>
-                    <th>1</th>
-					<td>Mark</td>
-					<td>Otto</td>
-					<td>@mdo</td>
 				</tr>
 				<tr>
 					<th scope="row">2</th>
 					<td>Jacob</td>
 					<td>Thornton</td>
 					<td>@fat</td>
-                    <th>1</th>
+					<th>1</th>
 					<td>Mark</td>
 					<td>Otto</td>
-					<td>@mdo</td>
-                    <th>1</th>
-					<td>Mark</td>
-					<td>Otto</td>
-					<td>@mdo</td>
-                    <th>1</th>
-					<td>Mark</td>
-					<td>Otto</td>
-					<td>@mdo</td>
-                    <th>1</th>
-					<td>Mark</td>
-					<td>Otto</td>
-					<td>@mdo</td>
-                    <th>1</th>
-					<td>Mark</td>
-					<td>Otto</td>
-					<td>@mdo</td>
 				</tr>
 				<tr>
 					<th scope="row">3</th>
 					<td>Kyle</td>
 					<td>Larry the Bird</td>
 					<td>@twitter</td>
-                    <th>1</th>
+					<th>1</th>
 					<td>Mark</td>
 					<td>Otto</td>
-					<td>@mdo</td>
-                    <th>1</th>
-					<td>Mark</td>
-					<td>Otto</td>
-					<td>@mdo</td>
-                    <th>1</th>
-					<td>Mark</td>
-					<td>Otto</td>
-					<td>@mdo</td>
-                    <th>1</th>
-					<td>Mark</td>
-					<td>Otto</td>
-					<td>@mdo</td>
-                    <th>1</th>
-					<td>Mark</td>
-					<td>Otto</td>
-					<td>@WER</td>
 				</tr>
 			</tbody>
 		</table>
+	</div>
+
+	<div class="pagination">
+		<button><i class="fa-solid fa-arrow-left-long"></i>&emsp;Prev</button>
+		<button>Next&emsp;<i class="fa-solid fa-arrow-right-long"></i></button>
+	</div>
+
+	<header style="margin-top: 5rem"><h2>Statistics</h2></header>
+
+	<div class="chart">
+		<div class="stats"></div>
 	</div>
 </section>

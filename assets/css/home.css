@@ -31,7 +31,7 @@
         cursor: pointer;
         text-align: center;
         border-radius: 10px;
-        padding: 15px 66px;
+        padding: 15px 75px;
         text-transform: uppercase; }
       #content .upload form .upload-wrapper {
         position: relative;
@@ -48,26 +48,38 @@
           border-radius: 10px;
           flex: 0 0 80%;
           font-weight: 600;
-          word-spacing: 0.2rem; }
+          word-spacing: 0.2rem;
+          letter-spacing: 0.1rem;
+          word-break: break-all; }
+          #content .upload form .upload-wrapper .btn.active {
+            background-color: var(--primary-text-color);
+            color: var(--sidebar-color); }
         #content .upload form .upload-wrapper input[type="file"],
         #content .upload form .upload-wrapper input[type="file"]::-webkit-file-upload-button {
-          cursor: pointer; }
+          cursor: pointer;
+          word-break: break-all; }
         #content .upload form .upload-wrapper input[type="file"] {
           cursor: pointer;
           font-size: 100px;
           position: absolute;
           left: 0;
           top: 0;
-          opacity: 0; }
+          opacity: 0;
+          word-break: break-all; }
   #content .table {
     width: 90%;
     margin: auto;
-    margin-top: 2rem;
+    margin-top: 1rem;
     overflow-x: scroll; }
     #content .table table {
       width: 100%; }
       #content .table table .heading {
-        background-color: var(--sidebar-color); }
+        background-color: var(--sidebar-color);
+        transition: all 0.15s ease-in-out; }
+        #content .table table .heading:hover {
+          background-color: var(--hover-color);
+          color: var(--sidebar-color);
+          cursor: pointer; }
     #content .table::-webkit-scrollbar {
       width: 20px; }
     #content .table::-webkit-scrollbar-track {
@@ -75,3 +87,57 @@
     #content .table::-webkit-scrollbar-thumb {
       background-color: var(--secondary-text-color);
       box-shadow: inset 2px 2px 5px 0 rgba(232, 249, 253, 0.5); }
+  #content .pagination {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    gap: 2rem;
+    margin-top: 2rem; }
+    #content .pagination button {
+      text-align: center;
+      padding: 5px 15px;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-weight: 700;
+      border: 2px solid var(--sidebar-color);
+      cursor: pointer;
+      transition: all 0.15s ease-in-out; }
+      #content .pagination button:hover {
+        background-color: var(--primary-text-color); }
+  #content header {
+    width: 100%;
+    margin-top: 3rem; }
+    #content header h2 {
+      word-spacing: 0.2rem;
+      font-weight: 700;
+      text-align: center;
+      width: 100%; }
+  #content .chart {
+    width: 90%;
+    height: 500px;
+    max-height: 500px;
+    margin: auto;
+    margin-top: 2rem;
+    margin-bottom: 4rem;
+    overflow-x: scroll; }
+    #content .chart .stats {
+      width: 100%;
+      height: 100%;
+      background-color: var(--sidebar-color); }
+    #content .chart::-webkit-scrollbar {
+      width: 20px; }
+    #content .chart::-webkit-scrollbar-track {
+      background-color: var(--primary-text-color); }
+    #content .chart::-webkit-scrollbar-thumb {
+      background-color: var(--secondary-text-color);
+      box-shadow: inset 2px 2px 5px 0 rgba(232, 249, 253, 0.5); }
+
+@media screen and (max-width: 700px) {
+  #content .chart {
+    width: 90%;
+    height: 370px;
+    max-height: 370px; } }

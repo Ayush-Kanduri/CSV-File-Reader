@@ -1,7 +1,7 @@
 #sidebar {
   width: 15%;
   min-width: 12rem;
-  height: 100%;
+  min-height: 100vh;
   background-color: var(--sidebar-color);
   display: flex;
   flex-direction: column;
@@ -25,20 +25,28 @@
         border: none; }
   #sidebar .files {
     width: 100%;
-    height: 550px;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    overflow: scroll;
-    overflow-x: hidden; }
+    overflow: hidden; }
     #sidebar .files .filename {
       width: 100%;
       color: var(--primary-text-color);
-      transition: all 0.15s ease-in-out; }
+      transition: all 0.15s ease-in-out;
+      word-break: break-all; }
       #sidebar .files .filename:last-child {
         margin-bottom: 170px; }
       #sidebar .files .filename:hover {
         cursor: pointer;
-        background-color: var(--hover-color); }
+        background-color: var(--hover-color);
+        color: var(--secondary-text-color); }
+        #sidebar .files .filename:hover span {
+          font-weight: 900; }
+      #sidebar .files .filename.active {
+        background-color: var(--hover-color);
+        color: var(--secondary-text-color); }
+        #sidebar .files .filename.active span {
+          font-weight: 900; }
       #sidebar .files .filename span {
         display: block;
         padding: 1.2rem;
@@ -49,6 +57,32 @@
         letter-spacing: 0.1rem;
         word-break: break-all;
         font-family: var(--text-family); }
+        #sidebar .files .filename span i {
+          transition: all 0.15s ease-in-out; }
+          #sidebar .files .filename span i:hover {
+            cursor: pointer;
+            color: var(--background-color); }
     #sidebar .files::-webkit-scrollbar {
       display: none;
       overflow: hidden; }
+
+@media screen and (max-width: 700px) {
+  #sidebar {
+    width: 100%;
+    background-color: var(--sidebar-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; }
+    #sidebar .files {
+      width: 100%;
+      height: 100%;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start; }
+      #sidebar .files .filename {
+        width: 30%;
+        min-width: 200px; }
+  #sidebar .files .filename:last-child {
+    margin-bottom: 10px; } }

@@ -22,7 +22,10 @@
   --text-family: "Red Hat Display", sans-serif; }
 
 body {
-  overflow: hidden; }
+  overflow-x: hidden; }
+  body::-webkit-scrollbar {
+    display: none;
+    overflow: hidden; }
 
 h1,
 h2,
@@ -48,3 +51,9 @@ main {
   main::-webkit-scrollbar {
     display: none;
     overflow: hidden; }
+
+@media screen and (max-width: 700px) {
+  main {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; } }

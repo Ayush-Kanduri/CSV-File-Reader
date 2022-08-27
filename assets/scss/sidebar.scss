@@ -1,7 +1,7 @@
 #sidebar {
 	width: 15%;
 	min-width: 12rem;
-	height: 100%;
+	min-height: 100vh;
 	background-color: var(--sidebar-color);
 	display: flex;
 	flex-direction: column;
@@ -40,11 +40,10 @@
 	}
 	.files {
 		width: 100%;
-		height: 550px;
+		height: 100%;
 		display: flex;
 		flex-direction: column;
-		overflow: scroll;
-		overflow-x: hidden;
+		overflow: hidden;
 		.filename {
 			&:last-child {
 				margin-bottom: 170px;
@@ -52,9 +51,21 @@
 			width: 100%;
 			color: var(--primary-text-color);
 			transition: all 0.15s ease-in-out;
+			word-break: break-all;
 			&:hover {
 				cursor: pointer;
 				background-color: var(--hover-color);
+				color: var(--secondary-text-color);
+				span {
+					font-weight: 900;
+				}
+			}
+			&.active {
+				background-color: var(--hover-color);
+				color: var(--secondary-text-color);
+				span {
+					font-weight: 900;
+				}
 			}
 			span {
 				display: block;
@@ -66,6 +77,13 @@
 				letter-spacing: 0.1rem;
 				word-break: break-all;
 				font-family: var(--text-family);
+				i {
+					transition: all 0.15s ease-in-out;
+					&:hover {
+						cursor: pointer;
+						color: var(--background-color);
+					}
+				}
 			}
 		}
 		&::-webkit-scrollbar {
@@ -76,4 +94,27 @@
 }
 
 @media screen and (max-width: 700px) {
+	#sidebar {
+		width: 100%;
+		background-color: var(--sidebar-color);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		.files {
+			width: 100%;
+			height: 100%;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: center;
+			align-items: flex-start;
+			.filename {
+				width: 30%;
+				min-width: 200px;
+			}
+		}
+	}
+	#sidebar .files .filename:last-child {
+		margin-bottom: 10px;
+	}
 }
