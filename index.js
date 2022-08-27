@@ -69,6 +69,10 @@ app.set("view engine", "ejs");
 //Set Up - Template Engine Views Folder Path (..../views)
 app.set("views", path.join(__dirname, "views"));
 
+//Middleware - Creates Server Storage Folder & Sub Folders, if not exists
+app.use(customMiddleware.createServerStorage);
+//Middleware - Creates Uploads Folder & Sub Folders, if not exists
+app.use(customMiddleware.createUploads);
 //Use the Routes Module
 app.use("/", routes);
 
