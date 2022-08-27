@@ -62,6 +62,7 @@ module.exports.upload = async (req, res) => {
 			file = await File.create({
 				name: req.file.originalname,
 				path: File.filePath + "/" + req.file.filename,
+				status: false,
 			});
 
 			return res.status(200).json({
@@ -155,6 +156,7 @@ module.exports.read = async (req, res) => {
 		//Return the Parsed Data
 		return res.status(200).json({
 			message: "File Read Successfully!",
+			response: "success",
 			data: records[0],
 		});
 	} catch (error) {

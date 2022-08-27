@@ -61,6 +61,7 @@
 				}
 			}
 			&.active {
+				cursor: pointer;
 				background-color: var(--hover-color);
 				color: var(--secondary-text-color);
 				span {

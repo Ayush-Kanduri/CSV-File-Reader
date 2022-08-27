@@ -52,8 +52,58 @@
 			}, 6500);
 		}
 
+		function deleteFile(filesDiv) {
+			try {
+				const filename = filesDiv.querySelectorAll(".filename > span > i");
+				filename.forEach((icon) => {
+					icon.addEventListener("click", async function (e) {
+						e.stopPropagation();
+						const id = e.target.getAttribute("data-id");
+						const response = await fetch(`/delete/${id}`, {
+							method: "DELETE",
+						});
+						const data = await response.json();
+						if (data.data === "success") {
+							notification("success");
+							e.target.parentElement.parentElement.remove();
+						} else {
+							notification("error");
+							return;
+						}
+					});
+				});
+			} catch (error) {
+				console.log(error);
+			}
+		}
+
+		function selectFile(filesDiv) {
+			filesDiv.querySelectorAll(".filename").forEach(function (item) {
+				item.addEventListener("click", async function (e) {
+					e.stopPropagation();
+					filesDiv.querySelectorAll(".filename").forEach(function (file) {
+						if (file !== item) file.classList.remove("active");
+						if (file === item) file.classList.add("active");
+					});
+					try {
+						const id = item.getAttribute("data-id");
+						const response = await fetch(`/read/${id}`, {
+							method: "GET",
+						});
+						const data = await response.json();
+						if (data.response !== "success") return;
+						records = data.data;
+					} catch (error) {
+						console.log(error);
+					}
+				});
+			});
+		}
+
 		function fileUpload() {
 			let END = false;
+			let records = [];
+			let status = false;
 
 			const btn = document.querySelector(".upload-wrapper > .upload-btn");
 			const file = document.querySelector(".upload-wrapper > input");
@@ -66,6 +116,8 @@
 				btn.textContent = fileList[0].name;
 				btn.classList.add("active");
 			}
+
+			selectFile(filesDiv);
 
 			form.addEventListener("submit", uploadFiles, false);
 			async function uploadFiles(e) {
@@ -100,10 +152,11 @@
 							});
 							const data = await response.json();
 
-							filesDiv.innerHTML += `<div class="filename">
+							filesDiv.innerHTML += `<div class="filename" data-id="${data.data._id}">
 							<span>${data.data.name}&emsp;<i class="fa-solid fa-trash" data-id='${data.data._id}'></i></span></div>`;
 
 							deleteFile(filesDiv);
+							selectFile(filesDiv);
 						} catch (error) {
 							console.log(error);
 						}

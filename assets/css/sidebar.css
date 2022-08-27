@@ -43,6 +43,7 @@
         #sidebar .files .filename:hover span {
           font-weight: 900; }
       #sidebar .files .filename.active {
+        cursor: pointer;
         background-color: var(--hover-color);
         color: var(--secondary-text-color); }
         #sidebar .files .filename.active span {
