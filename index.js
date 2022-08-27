@@ -39,7 +39,7 @@ if (env.name == "development") {
 			dest: path.join(__dirname, env.asset_path, "css"),
 			//Reports error. If in production mode, set as false.
 			// debug: true,
-			debug: true,
+			debug: false,
 			//The code should be in a single line - "compressed" or multiple lines - "expanded"
 			outputStyle: "extended",
 			//Prefix for the CSS files - where to look out for the css files in the assets folder

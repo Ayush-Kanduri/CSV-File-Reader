@@ -54,13 +54,11 @@
 
 		function fileUpload() {
 			let END = false;
-			notification(END, "error");
-			notification(END, "success");
 
 			const btn = document.querySelector(".upload-wrapper > .upload-btn");
 			const file = document.querySelector(".upload-wrapper > input");
 			const form = document.querySelector(".upload > form");
-			const filename = document.querySelector(".filename > span");
+			const filesDiv = document.querySelector(".files");
 
 			file.addEventListener("change", handleFiles, false);
 			function handleFiles(e) {
@@ -86,19 +84,26 @@
 				if (END) return;
 
 				//File Type must be CSV
-				if (file.type.match("text/csv")) {
+				if (file.files[0].type.match("text/csv")) {
 					//File Size must be less than equal to 2MB
-					if (file.size <= 1024 * 1024 * 2) {
+					if (file.files[0].size <= 1024 * 1024 * 2) {
 						notification(END, "success");
 						try {
 							let formSelf = e.target; //or formSelf = this;
 							let formData = new FormData(formSelf);
+							e.target.reset();
+							btn.textContent = "Choose File";
+							btn.classList.remove("active");
 							const response = await fetch("/upload", {
 								method: "POST",
 								body: formData,
 							});
 							const data = await response.json();
-							filename.textContent = data.data.name;
+
+							filesDiv.innerHTML += `<div class="filename">
+							<span>${data.data.name}&emsp;<i class="fa-solid fa-trash" data-id='${data.data._id}'></i></span></div>`;
+
+							deleteFile(filesDiv);
 						} catch (error) {
 							console.log(error);
 						}
@@ -110,6 +115,61 @@
 			}
 		}
 		fileUpload();
+	} catch (error) {
+		console.log(error);
+	}
+	try {
+		const filesDiv = document.querySelector(".files");
+
+		function notification(type) {
+			const toastContainer = document.querySelector(".toast-container");
+			const toast = toastContainer.querySelector(".toast").cloneNode(true);
+			toast.style.display = "block";
+
+			if (type === "error") {
+				toast.querySelector(".toast-body strong").textContent =
+					"Error in deleting the file ❌";
+			}
+			if (type === "success") {
+				toast.querySelector(".toast-body strong").textContent =
+					"File deleted successfully 🔥";
+			}
+
+			toastContainer.appendChild(toast);
+
+			const Toast = new bootstrap.Toast(toast);
+			Toast.show();
+
+			setTimeout(function () {
+				toast.remove();
+			}, 6500);
+		}
+
+		function deleteFile(filesDiv) {
+			try {
+				const filename = filesDiv.querySelectorAll(".filename > span > i");
+				filename.forEach((icon) => {
+					icon.addEventListener("click", async function (e) {
+						e.stopPropagation();
+						const id = e.target.getAttribute("data-id");
+						const response = await fetch(`/delete/${id}`, {
+							method: "DELETE",
+						});
+						const data = await response.json();
+						if (data.data === "success") {
+							notification("success");
+							e.target.parentElement.parentElement.remove();
+						} else {
+							notification("error");
+							return;
+						}
+					});
+				});
+			} catch (error) {
+				console.log(error);
+			}
+		}
+		deleteFile(filesDiv);
 	} catch (error) {
 		console.log(error);
 	}

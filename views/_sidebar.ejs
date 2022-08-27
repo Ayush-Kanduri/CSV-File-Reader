@@ -18,9 +18,14 @@
 		/>
 	</div>
 	<div class="files">
-		<% for(let i=0; i < 6; i++){ %>
+		<% for(let file of files){ %>
 		<div class="filename">
-			<span>File.csv&emsp;<i class="fa-solid fa-trash"></i></span>
+			<span
+				><%= file.name %>&emsp;<i
+					class="fa-solid fa-trash"
+					data-id="<%= file.id %>"
+				></i
+			></span>
 		</div>
 		<% } %>
 	</div>

@@ -9,6 +9,5 @@ const homeRouter = require("./home");
 //Use the Home Router
 router.use("/", homeRouter);
 
-
 //Export the Index Router
 module.exports = router;

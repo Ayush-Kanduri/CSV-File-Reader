@@ -32,7 +32,12 @@
         text-align: center;
         border-radius: 10px;
         padding: 15px 75px;
-        text-transform: uppercase; }
+        text-transform: uppercase;
+        box-shadow: none; }
+        #content .upload form .submit:focus {
+          outline: none;
+          border: none;
+          box-shadow: none; }
       #content .upload form .upload-wrapper {
         position: relative;
         overflow: hidden;
@@ -50,10 +55,17 @@
           font-weight: 600;
           word-spacing: 0.2rem;
           letter-spacing: 0.1rem;
+          box-shadow: none;
+          border: none;
+          outline: none;
           word-break: break-all; }
           #content .upload form .upload-wrapper .btn.active {
             background-color: var(--primary-text-color);
             color: var(--sidebar-color); }
+          #content .upload form .upload-wrapper .btn:focus {
+            outline: none;
+            box-shadow: none;
+            border: none; }
         #content .upload form .upload-wrapper input[type="file"],
         #content .upload form .upload-wrapper input[type="file"]::-webkit-file-upload-button {
           cursor: pointer;

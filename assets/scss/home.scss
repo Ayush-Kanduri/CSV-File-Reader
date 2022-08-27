@@ -32,6 +32,12 @@
 				border-radius: 10px;
 				padding: 15px 75px;
 				text-transform: uppercase;
+				box-shadow: none;
+				&:focus {
+					outline: none;
+					border: none;
+					box-shadow: none;
+				}
 			}
 			.upload-wrapper {
 				position: relative;
@@ -50,10 +56,18 @@
 					font-weight: 600;
 					word-spacing: 0.2rem;
 					letter-spacing: 0.1rem;
+					box-shadow: none;
+					border: none;
+					outline: none;
 					word-break: break-all;
 					&.active {
 						background-color: var(--primary-text-color);
 						color: var(--sidebar-color);
+					}
+					&:focus {
+						outline: none;
+						box-shadow: none;
+						border: none;
 					}
 				}
 				input[type="file"],
