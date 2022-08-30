@@ -82,6 +82,8 @@ module.exports.upload = async (req, res) => {
 module.exports.delete = async (req, res) => {
 	try {
 		let file = await File.findById(req.params.id);
+		let filename = file.name;
+
 		if (!file) {
 			return res.status(404).json({
 				message: "File not found!",
@@ -103,6 +105,7 @@ module.exports.delete = async (req, res) => {
 		return res.status(200).json({
 			message: "File Deleted Successfully!",
 			data: "success",
+			filename: filename,
 		});
 	} catch (error) {
 		console.log(error);
@@ -158,6 +161,7 @@ module.exports.read = async (req, res) => {
 			message: "File Read Successfully!",
 			response: "success",
 			data: records[0],
+			filename: file.name,
 		});
 	} catch (error) {
 		console.log(error);
