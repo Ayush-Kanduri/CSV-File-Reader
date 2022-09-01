@@ -91,6 +91,13 @@
           background-color: var(--hover-color);
           color: var(--sidebar-color);
           cursor: pointer; }
+        #content .table table .heading.active {
+          background-color: var(--hover-color);
+          color: var(--sidebar-color); }
+        #content .table table .heading i {
+          display: none; }
+          #content .table table .heading i.active {
+            display: inline-block; }
     #content .table::-webkit-scrollbar {
       width: 20px; }
     #content .table::-webkit-scrollbar-track {

@@ -103,6 +103,16 @@
 					color: var(--sidebar-color);
 					cursor: pointer;
 				}
+				&.active {
+					background-color: var(--hover-color);
+					color: var(--sidebar-color);
+				}
+				i {
+					display: none;
+					&.active {
+						display: inline-block;
+					}
+				}
 			}
 		}
 		&::-webkit-scrollbar {

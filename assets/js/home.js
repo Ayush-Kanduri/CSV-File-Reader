@@ -17,9 +17,9 @@
 			Current_Page: 1,
 		};
 		const filesDiv = document.querySelector(".files");
-		let selectedColumns = new Map();
 		let selectedFile = undefined;
 		let deletedFile = undefined;
+		let activeColumn = undefined;
 
 		function notification(type, message) {
 			const toastContainer = document.querySelector(".toast-container");
@@ -216,17 +216,17 @@
 			}
 		}
 
-		function createChart(index) {
+		function createChart(heading, index) {
 			google.charts.load("current", { packages: ["corechart"] });
 			google.charts.setOnLoadCallback(drawChart);
 
-			// const table = document.querySelector("table");
-			// const tbody = table.tBodies[0];
-			// const rows = Array.from(tbody.rows);
-			// for (let row of rows) {
-			// 	const Data = row.cells[index];
-			// 	console.log(Data);
-			// }
+			const table = document.querySelector("table");
+			const tbody = table.tBodies[0];
+			const rows = Array.from(tbody.rows);
+			const cols = [];
+			for (let row of rows) cols.push(row.cells[index].textContent.trim());
+			// [....].filter(x => x==2).length
+			console.log(cols);
 
 			function drawChart() {}
 		}
@@ -298,19 +298,31 @@
 
 		function tableSort() {
 			try {
-				// const heading = document.querySelectorAll(".heading");
-				// const table = document.querySelector("table");
-				// const tbody = table.tBodies[0];
-				// const rows = Array.from(tbody.rows);
-				// console.log(rows);
+				const heading = document.querySelectorAll(".heading");
+				const Columns = new Map();
 
 				heading.forEach(function (item) {
+					if (!Columns.has(item.textContent.trim())) {
+						Columns.set(item.textContent.trim(), false);
+					}
 					item.addEventListener("click", function () {
-						for (let head of heading) head.style.backgroundColor = "";
-						this.style.backgroundColor = "#59ce8f";
+						for (let head of heading) head.classList.remove("active");
+						this.classList.add("active");
+						activeColumn = this;
+						for (let head of heading) {
+							head.querySelector("i").classList.remove("active");
+						}
 						const icon = item.querySelector("i");
 						const index = item.getAttribute("data-index");
-						createChart(index);
+						createChart(item.textContent.trim(), index);
+						if (!Columns.get(item.textContent.trim())) {
+							Columns.set(item.textContent.trim(), true);
+							icon.classList.add("active");
+							sort(index, "ascending");
+							return;
+						} else {
+							icon.classList.add("active");
+						}
 						if (icon.classList.contains("fa-sort-down")) {
 							sort(index, "ascending");
 							icon.classList.replace("fa-sort-down", "fa-sort-up");
@@ -400,6 +412,40 @@
 
 					Page.Current_Records = Page.Records.slice(start, end);
 					createTable(Page.Current_Records);
+					tableSort();
+
+					if (activeColumn !== undefined) {
+						const heading = document.querySelectorAll(".heading");
+						const arr = [];
+						for (let head of heading) arr.push(head.textContent.trim());
+						if (arr.includes(activeColumn.textContent.trim())) {
+							let index = activeColumn.getAttribute("data-index");
+							let column = undefined;
+							for (let item of heading) {
+								if (item.getAttribute("data-index") == index) {
+									column = item;
+									break;
+								}
+							}
+							let icon = activeColumn.querySelector("i");
+							if (icon.classList.contains("fa-sort-down")) {
+								icon = column.querySelector("i");
+								icon.classList.remove("fa-sort-up");
+								icon.classList.add("fa-sort-down");
+								icon.classList.add("active");
+								sort(index, "descending");
+							} else {
+								icon = column.querySelector("i");
+								icon.classList.remove("fa-sort-down");
+								icon.classList.add("fa-sort-up");
+								icon.classList.add("active");
+								sort(index, "ascending");
+							}
+							column.classList.add("active");
+							activeColumn = column;
+							createChart(column.textContent.trim(), index);
+						}
+					}
 
 					Page.Current_Page++;
 
