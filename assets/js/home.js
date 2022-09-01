@@ -17,6 +17,7 @@
 			Current_Page: 1,
 		};
 		const filesDiv = document.querySelector(".files");
+		let selectedColumns = new Map();
 		let selectedFile = undefined;
 		let deletedFile = undefined;
 
@@ -215,6 +216,21 @@
 			}
 		}
 
+		function createChart(index) {
+			google.charts.load("current", { packages: ["corechart"] });
+			google.charts.setOnLoadCallback(drawChart);
+
+			// const table = document.querySelector("table");
+			// const tbody = table.tBodies[0];
+			// const rows = Array.from(tbody.rows);
+			// for (let row of rows) {
+			// 	const Data = row.cells[index];
+			// 	console.log(Data);
+			// }
+
+			function drawChart() {}
+		}
+
 		//Function :: Used for the Sorting Mechanism
 		function sort(ColumnIndex, type) {
 			const table = document.querySelector("table");
@@ -228,8 +244,6 @@
 			const Data = rows[0].cells[ColumnIndex].textContent.trim();
 
 			let sortedRows = [];
-
-			// if (Data === "") return;
 
 			if (isNaN(Data)) {
 				//Sort each Row :: This is a sorting function with a comparator function which decides the order/placement of the rows
@@ -284,7 +298,11 @@
 
 		function tableSort() {
 			try {
-				const heading = document.querySelectorAll(".heading");
+				// const heading = document.querySelectorAll(".heading");
+				// const table = document.querySelector("table");
+				// const tbody = table.tBodies[0];
+				// const rows = Array.from(tbody.rows);
+				// console.log(rows);
 
 				heading.forEach(function (item) {
 					item.addEventListener("click", function () {
@@ -292,6 +310,7 @@
 						this.style.backgroundColor = "#59ce8f";
 						const icon = item.querySelector("i");
 						const index = item.getAttribute("data-index");
+						createChart(index);
 						if (icon.classList.contains("fa-sort-down")) {
 							sort(index, "ascending");
 							icon.classList.replace("fa-sort-down", "fa-sort-up");
@@ -307,49 +326,90 @@
 		}
 
 		function pagination() {
-			Page.Current_Records = Page.Records.slice(0, Page.Total_Rows_Per_Page);
+			let start = 0;
+			let end = Page.Total_Rows_Per_Page;
+
+			Page.Current_Records = Page.Records.slice(start, end);
 			Page.Current_Page = 1;
-
-			createTable(Page.Current_Records);
-
 			Page.Total_Rows = Page.Records.length;
 			Page.Total_Pages = Math.ceil(
 				Page.Total_Rows / Page.Total_Rows_Per_Page
 			);
 
-			// nextPage();
-			// previousPage();
+			const pages = document.querySelector(".pages");
+			pages.querySelectorAll("li").forEach(function (item) {
+				item.remove();
+			});
+
+			createTable(Page.Current_Records);
+
+			const nxt = document.querySelector("button.next-btn");
+			const prev = document.querySelector("button.prev-btn");
+			prev.style.display = "none";
+			if (Page.Total_Pages === 1) nxt.style.display = "none";
+			if (Page.Total_Pages === 1) prev.style.display = "none";
+
+			for (let i = 0; i < Page.Total_Pages; i++) {
+				const page = document.createElement("li");
+				page.classList.add("page");
+				page.setAttribute("data-page", i + 1);
+				if (i === 0) page.classList.add("active");
+				let p = document.createElement("p");
+				p.textContent = i + 1;
+				page.appendChild(p);
+				if (Page.Total_Pages === 1) {
+					pages.appendChild(page);
+					return;
+				}
+				page.addEventListener("click", function () {
+					for (let item of document.querySelectorAll(".page")) {
+						item.classList.remove("active");
+					}
+					page.classList.add("active");
+					Page.Current_Page = Number(this.querySelector("p").textContent);
+					let start = (Page.Current_Page - 1) * Page.Total_Rows_Per_Page;
+					let end = Page.Current_Page * Page.Total_Rows_Per_Page;
+					Page.Current_Records = Page.Records.slice(start, end);
+
+					createTable(Page.Current_Records);
+
+					if (Page.Current_Page === Page.Total_Pages) {
+						nxt.style.display = "none";
+					} else if (Page.Current_Page === 1) {
+						prev.style.display = "none";
+					} else {
+						nxt.style.display = "inline-block";
+						prev.style.display = "inline-block";
+					}
+				});
+				pages.appendChild(page);
+			}
 		}
 
 		function nextPage() {
 			const nxt = document.querySelector(".pagination > button.next-btn");
+			if (Page.Total_Pages === 1) nxt.style.display = "none";
 			if (Page.Current_Page === Page.Total_Pages) nxt.style.display = "none";
 
 			nxt.addEventListener("click", function (e) {
 				e.preventDefault();
 				e.stopPropagation();
-				// if (Page.Current_Page < Page.Total_Pages) {
-				// 	Page.Current_Page++;
-				// 	let start = Page.Current_Page * Page.Total_Rows_Per_Page;
-				// 	let end = start - Page.Total_Rows_Per_Page;
-				// 	console.log(end, start);
-				// 	Page.Current_Records = Page.Records.slice(end, start);
-				// 	createTable(Page.Current_Records);
-				// 	if (Page.Current_Page === Page.Total_Pages) {
-				// 		nxt.style.display = "none";
-				// 		return;
-				// 	} else {
-				// 		nxt.style.display = "inline-block";
-				// 	}
-				// }
 				if (Page.Current_Page < Page.Total_Pages) {
 					let start = Page.Current_Page * Page.Total_Rows_Per_Page;
 					let end = start + Page.Total_Rows_Per_Page;
-					console.log("Current Page:", Page.Current_Page);
-					console.log("Start:", start, "End:", end);
+
 					Page.Current_Records = Page.Records.slice(start, end);
 					createTable(Page.Current_Records);
+
 					Page.Current_Page++;
+
+					for (let item of document.querySelectorAll(".page")) {
+						item.classList.remove("active");
+					}
+					document
+						.querySelector(`[data-page='${Page.Current_Page}']`)
+						.classList.add("active");
+
 					if (Page.Current_Page === Page.Total_Pages) {
 						nxt.style.display = "none";
 						return;
@@ -362,6 +422,7 @@
 
 		function previousPage() {
 			const prev = document.querySelector(".pagination > button.prev-btn");
+			if (Page.Total_Pages === 1) prev.style.display = "none";
 			if (Page.Current_Page === 1) prev.style.display = "none";
 
 			prev.addEventListener("click", function (e) {
@@ -369,12 +430,20 @@
 				e.stopPropagation();
 				if (Page.Current_Page > 1) {
 					Page.Current_Page--;
+
+					for (let item of document.querySelectorAll(".page")) {
+						item.classList.remove("active");
+					}
+					document
+						.querySelector(`[data-page='${Page.Current_Page}']`)
+						.classList.add("active");
+
 					let start = Page.Current_Page * Page.Total_Rows_Per_Page;
 					let end = start - Page.Total_Rows_Per_Page;
-					console.log("Current Page:", Page.Current_Page);
-					console.log("Start:", end, "End:", start);
+
 					Page.Current_Records = Page.Records.slice(end, start);
 					createTable(Page.Current_Records);
+
 					if (Page.Current_Page === 1) {
 						prev.style.display = "none";
 						return;
