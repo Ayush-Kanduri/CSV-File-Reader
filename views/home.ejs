@@ -1,5 +1,9 @@
 <link rel="stylesheet" href="<%= assetPath('css/home.css') %>" />
-<script defer src="<%= assetPath('js/home.js') %>"></script>
+<script
+	defer
+	type="text/javascript"
+	src="<%= assetPath('js/home.js') %>"
+></script>
 
 <%- include('_sidebar.ejs') %>
 <section id="content">
@@ -99,6 +103,10 @@
 	<header style="margin-top: 5rem"><h2>Statistics</h2></header>
 
 	<div class="chart">
-		<div class="stats"></div>
+		<div id="stats" class="stats"></div>
+	</div>
+
+	<div class="chart2">
+		<div id="pie" class="stats"></div>
 	</div>
 </section>

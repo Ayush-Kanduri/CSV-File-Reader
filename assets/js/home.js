@@ -217,18 +217,186 @@
 		}
 
 		function createChart(heading, index) {
-			google.charts.load("current", { packages: ["corechart"] });
+			const Frequency = new Map();
+			const Percentage = new Map();
+			let sum = 0;
+
+			for (let record of Page.Records) {
+				if (Frequency.has(record[heading])) {
+					Frequency.set(
+						record[heading],
+						Frequency.get(record[heading]) + 1
+					);
+				} else {
+					Frequency.set(record[heading], 1);
+				}
+			}
+
+			google.charts.load("current", { packages: ["corechart", "bar"] });
 			google.charts.setOnLoadCallback(drawChart);
+			google.charts.setOnLoadCallback(drawPieChart);
 
-			const table = document.querySelector("table");
-			const tbody = table.tBodies[0];
-			const rows = Array.from(tbody.rows);
-			const cols = [];
-			for (let row of rows) cols.push(row.cells[index].textContent.trim());
-			// [....].filter(x => x==2).length
-			console.log(cols);
+			for (const value of Frequency.values()) sum += value;
 
-			function drawChart() {}
+			for (let [key, value] of Frequency) {
+				Percentage.set(key, (Number(value) * 100) / sum);
+			}
+
+			function drawChart() {
+				const data = new google.visualization.arrayToDataTable([
+					[heading, "Percentage"],
+					...Percentage,
+				]);
+
+				const options = {
+					width: 800,
+					height: 450,
+					backgroundColor: {
+						fill: "#000000",
+						fillOpacity: 1,
+					},
+					titleTextStyle: {
+						color: "#e8f9fd",
+						fontSize: 20,
+						fontName: "poppins",
+						bold: true,
+						italic: false,
+						underline: false,
+					},
+					legend: {
+						position: "right",
+						textStyle: {
+							color: "#e8f9fd",
+							fontSize: 15,
+							fontName: "poppins",
+						},
+					},
+					tooltip: { textStyle: { fontName: "poppins" } },
+					is3D: true,
+					chart: {
+						title: "Frequency Distribution of " + heading.toUpperCase(),
+						subtitle: "Percentage",
+					},
+					annotations: { textStyle: { fontName: "poppins" } },
+					chartArea: {
+						backgroundColor: {
+							fill: "#000000",
+							fillOpacity: 1,
+						},
+					},
+					colors: ["#59ce8f"],
+					isStacked: "true",
+					axes: {
+						x: {
+							0: {
+								side: "bottom",
+								// label: "Percentage",
+							},
+						},
+					},
+					bar: { groupWidth: "60%" },
+					vAxis: {
+						minValue: 0,
+						title: "PERCENTAGE",
+						textStyle: {
+							color: "#e8f9fd",
+							fontSize: 15,
+							fontName: "poppins",
+						},
+						titleTextStyle: {
+							color: "#e8f9fd",
+							fontSize: 15,
+							fontName: "poppins",
+							bold: true,
+						},
+					},
+					hAxis: {
+						title: heading.toUpperCase(),
+						textStyle: {
+							color: "#e8f9fd",
+							fontSize: 15,
+							fontName: "poppins",
+						},
+						titleTextStyle: {
+							color: "#e8f9fd",
+							fontSize: 15,
+							fontName: "poppins",
+							bold: true,
+						},
+					},
+				};
+
+				document.querySelector("#stats").style.display = "flex";
+				document.querySelector("#stats").style.overflowX = "scroll";
+				document.querySelector(".chart").style.overflowX = "scroll";
+				document.querySelector(".chart").style.height = "500px";
+
+				const div = document.getElementById("stats");
+
+				const chart = new google.charts.Bar(div);
+				chart.draw(data, google.charts.Bar.convertOptions(options));
+			}
+
+			function drawPieChart() {
+				const data = google.visualization.arrayToDataTable([
+					[heading, "Percentage"],
+					...Percentage,
+				]);
+
+				const options = {
+					width: 800,
+					height: 450,
+					title: "Frequency Distribution of " + heading.toUpperCase(),
+					is3D: true,
+					legend: {
+						textStyle: {
+							color: "#e8f9fd",
+							fontSize: 17,
+						},
+					},
+					titleTextStyle: {
+						color: "#e8f9fd",
+						fontSize: 20,
+						bold: true,
+						italic: false,
+						underline: false,
+					},
+					backgroundColor: {
+						fill: "#000000",
+						fillOpacity: 1,
+						// stroke: "#59ce8f",
+						// strokeWidth: 8,
+					},
+					colors: [
+						"#8479f3",
+						"#59ce8f",
+						"#ed2d2d",
+						"#faac33",
+						"#fe60d7",
+						"#44cfe4",
+						"#e2b855",
+						"#55e2ae",
+						"#a855e2",
+						"#e25855",
+					],
+					pieSliceText: "percentage",
+					pieSliceTextStyle: {
+						color: "#000000",
+						fontSize: 16,
+						bold: true,
+					},
+				};
+
+				document.querySelector("#pie").style.display = "flex";
+				document.querySelector("#pie").style.overflowX = "scroll";
+				document.querySelector(".chart2").style.overflowX = "scroll";
+				document.querySelector(".chart2").style.height = "500px";
+
+				const div = document.getElementById("pie");
+
+				const chart = new google.visualization.PieChart(div);
+				chart.draw(data, options);
+			}
 		}
 
 		//Function :: Used for the Sorting Mechanism
@@ -308,7 +476,6 @@
 					item.addEventListener("click", function () {
 						for (let head of heading) head.classList.remove("active");
 						this.classList.add("active");
-						activeColumn = this;
 						for (let head of heading) {
 							head.querySelector("i").classList.remove("active");
 						}
@@ -317,11 +484,17 @@
 						createChart(item.textContent.trim(), index);
 						if (!Columns.get(item.textContent.trim())) {
 							Columns.set(item.textContent.trim(), true);
+							if (activeColumn === undefined) {
+								icon.classList.add("active");
+								sort(index, "ascending");
+								activeColumn = this;
+								return;
+							}
 							icon.classList.add("active");
-							sort(index, "ascending");
-							return;
+							activeColumn = this;
 						} else {
 							icon.classList.add("active");
+							activeColumn = this;
 						}
 						if (icon.classList.contains("fa-sort-down")) {
 							sort(index, "ascending");
@@ -384,6 +557,40 @@
 					Page.Current_Records = Page.Records.slice(start, end);
 
 					createTable(Page.Current_Records);
+					tableSort();
+
+					if (activeColumn !== undefined) {
+						const heading = document.querySelectorAll(".heading");
+						const arr = [];
+						for (let head of heading) arr.push(head.textContent.trim());
+						if (arr.includes(activeColumn.textContent.trim())) {
+							let index = activeColumn.getAttribute("data-index");
+							let column = undefined;
+							for (let item of heading) {
+								if (item.getAttribute("data-index") == index) {
+									column = item;
+									break;
+								}
+							}
+							let icon = activeColumn.querySelector("i");
+							if (icon.classList.contains("fa-sort-down")) {
+								icon = column.querySelector("i");
+								icon.classList.remove("fa-sort-up");
+								icon.classList.add("fa-sort-down");
+								icon.classList.add("active");
+								sort(index, "descending");
+							} else {
+								icon = column.querySelector("i");
+								icon.classList.remove("fa-sort-down");
+								icon.classList.add("fa-sort-up");
+								icon.classList.add("active");
+								sort(index, "ascending");
+							}
+							column.classList.add("active");
+							activeColumn = column;
+							createChart(column.textContent.trim(), index);
+						}
+					}
 
 					if (Page.Current_Page === Page.Total_Pages) {
 						nxt.style.display = "none";
@@ -489,6 +696,40 @@
 
 					Page.Current_Records = Page.Records.slice(end, start);
 					createTable(Page.Current_Records);
+					tableSort();
+
+					if (activeColumn !== undefined) {
+						const heading = document.querySelectorAll(".heading");
+						const arr = [];
+						for (let head of heading) arr.push(head.textContent.trim());
+						if (arr.includes(activeColumn.textContent.trim())) {
+							let index = activeColumn.getAttribute("data-index");
+							let column = undefined;
+							for (let item of heading) {
+								if (item.getAttribute("data-index") == index) {
+									column = item;
+									break;
+								}
+							}
+							let icon = activeColumn.querySelector("i");
+							if (icon.classList.contains("fa-sort-down")) {
+								icon = column.querySelector("i");
+								icon.classList.remove("fa-sort-up");
+								icon.classList.add("fa-sort-down");
+								icon.classList.add("active");
+								sort(index, "descending");
+							} else {
+								icon = column.querySelector("i");
+								icon.classList.remove("fa-sort-down");
+								icon.classList.add("fa-sort-up");
+								icon.classList.add("active");
+								sort(index, "ascending");
+							}
+							column.classList.add("active");
+							activeColumn = column;
+							createChart(column.textContent.trim(), index);
+						}
+					}
 
 					if (Page.Current_Page === 1) {
 						prev.style.display = "none";
