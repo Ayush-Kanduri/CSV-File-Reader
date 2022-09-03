@@ -1,3 +1,18 @@
+.tooltip {
+	background-color: transparent;
+	.tooltip-arrow {
+		color: var(--sidebar-color);
+		background-color: transparent;
+		margin-left: 13px;
+	}
+	.tooltip-inner {
+		margin-left: 14px;
+		background-color: var(--sidebar-color);
+		color: var(--primary-text-color);
+		max-width: 150px;
+	}
+}
+
 #content {
 	width: 85%;
 	height: 100%;

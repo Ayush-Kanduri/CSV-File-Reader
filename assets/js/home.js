@@ -7,12 +7,13 @@
 		const error = {
 			upload: "Please select a CSV File of Size <= 2MB ❌",
 			delete: "Error in deleting the file ❌",
+			search: "Please select a column to search ❌",
 		};
-		const Page = {
+		let Page = {
 			Current_Records: [],
 			Records: [],
 			Total_Rows: 0,
-			Total_Rows_Per_Page: 10,
+			Total_Rows_Per_Page: 100,
 			Total_Pages: 0,
 			Current_Page: 1,
 		};
@@ -20,6 +21,74 @@
 		let selectedFile = undefined;
 		let deletedFile = undefined;
 		let activeColumn = undefined;
+		let searchFlag = false;
+
+		function tooltip() {
+			try {
+				const options = {
+					animation: true,
+					html: true,
+					placement: "right",
+					trigger: "hover",
+					delay: { show: 300, hide: 100 },
+				};
+				const tooltipTriggerList = document.querySelectorAll(
+					'[data-bs-toggle="tooltip"]'
+				);
+
+				const tooltipList = [...tooltipTriggerList].map(
+					(ele) => new bootstrap.Tooltip(ele, options)
+				);
+				tooltipList.forEach((ele) => {
+					ele.tip.classList.add("tooltip");
+				});
+			} catch (error) {
+				// console.log(error);
+			}
+		}
+
+		function search() {
+			const searchInput = document.querySelector(".form-control");
+
+			tooltip();
+			searchFlag = false;
+			searchInput.style.cursor = "not-allowed";
+			searchInput.disabled = true;
+
+			searchInput.addEventListener("input", (e) => {
+				const searchValue = e.target.value;
+				if (searchValue === "") {
+					if (Page.Records.length !== 0) {
+						pagination();
+						tableSort();
+					}
+				}
+				if (activeColumn === undefined) {
+					notification("error", "search");
+					return;
+				}
+				searchFlag = true;
+				Page.Current_Records = Page.Records.filter((record) => {
+					const key = activeColumn.textContent.trim();
+					return record[key]
+						.toLowerCase()
+						.includes(searchValue.toLowerCase());
+				});
+				Page.Total_Rows = Page.Current_Records.length;
+				Page.Total_Pages = Math.ceil(
+					Page.Total_Rows / Page.Total_Rows_Per_Page
+				);
+				Page.Current_Page = 1;
+
+				const pages = document.querySelector(".pages");
+				pages.querySelectorAll("li").forEach(function (item) {
+					item.remove();
+				});
+
+				pagination(searchValue);
+				tableSort();
+			});
+		}
 
 		function notification(type, message) {
 			const toastContainer = document.querySelector(".toast-container");
@@ -68,10 +137,42 @@
 		function deleteTable() {
 			try {
 				const btns = document.querySelectorAll(".pagination button");
+				const searchInput = document.querySelector(".form-control");
+				const table = document.querySelector("table");
 				if (deletedFile === selectedFile) {
-					document.querySelector("table").remove();
+					if (table) table.remove();
 					btns.forEach((item) => (item.style.display = "none"));
 					document.querySelector(".table").style.overflowX = "hidden";
+					document.querySelectorAll("#pie > *").forEach((item) => {
+						item.remove();
+					});
+					document.querySelectorAll("#stats > *").forEach((item) => {
+						item.remove();
+					});
+					document.querySelector(".chart").style.height = "auto";
+					document.querySelector(".chart").style.overflowX = "hidden";
+					document.querySelector(".chart2").style.height = "auto";
+					document.querySelector(".chart2").style.overflowX = "hidden";
+
+					Page = {
+						Current_Records: [],
+						Records: [],
+						Total_Rows: 0,
+						Total_Rows_Per_Page: Page.Total_Rows_Per_Page,
+						Total_Pages: 0,
+						Current_Page: 1,
+					};
+
+					selectedFile = undefined;
+					deletedFile = undefined;
+					activeColumn = undefined;
+					document.querySelectorAll(".pages li").forEach(function (item) {
+						item.remove();
+					});
+					searchInput.value = "";
+					searchInput.style.cursor = "not-allowed";
+					searchInput.disabled = true;
+					searchFlag = false;
 				}
 			} catch (error) {
 				console.log(error);
@@ -93,6 +194,8 @@
 						});
 						const data = await response.json();
 						if (data.response !== "success") return;
+						deletedFile = selectedFile;
+						deleteTable();
 						Page.Records = data.data;
 						selectedFile = data.filename;
 						pagination();
@@ -106,6 +209,30 @@
 
 		function createTable(records) {
 			const tableDiv = document.querySelector(".table");
+			const chart1 = document.querySelector(".chart");
+			const chart2 = document.querySelector(".chart2");
+
+			if (records.length === 0) {
+				tableDiv.style.display = "none";
+				tableDiv.style.overflowX = "hidden";
+				chart1.style.display = "none";
+				chart1.style.overflowX = "hidden";
+				chart2.style.display = "none";
+				chart2.style.overflowX = "hidden";
+				chart1.style.height = "auto";
+				chart2.style.height = "auto";
+				return;
+			} else {
+				tableDiv.style.display = "initial";
+				tableDiv.style.overflowX = "scroll";
+				chart1.style.display = "initial";
+				chart1.style.overflowX = "scroll";
+				chart2.style.display = "initial";
+				chart2.style.overflowX = "scroll";
+				chart1.style.height = "500px";
+				chart2.style.height = "500px";
+			}
+
 			const headingsArray = Object.keys(records[0]);
 			let headingContent = ``;
 			let bodyContent = ``;
@@ -474,6 +601,11 @@
 						Columns.set(item.textContent.trim(), false);
 					}
 					item.addEventListener("click", function () {
+						const searchInput = document.querySelector(".form-control");
+						searchInput.style.cursor = "initial";
+						searchInput.disabled = false;
+						searchFlag = true;
+
 						for (let head of heading) head.classList.remove("active");
 						this.classList.add("active");
 						for (let head of heading) {
@@ -510,13 +642,23 @@
 			}
 		}
 
-		function pagination() {
+		function pagination(searchValue = "") {
 			let start = 0;
 			let end = Page.Total_Rows_Per_Page;
 
-			Page.Current_Records = Page.Records.slice(start, end);
+			if (searchFlag) {
+				Page.Current_Records = Page.Records.filter((record) => {
+					const key = activeColumn.textContent.trim();
+					return record[key]
+						.toLowerCase()
+						.includes(searchValue.toLowerCase());
+				});
+				Page.Total_Rows = Page.Current_Records.length;
+			} else {
+				Page.Current_Records = Page.Records.slice(start, end);
+				Page.Total_Rows = Page.Records.length;
+			}
 			Page.Current_Page = 1;
-			Page.Total_Rows = Page.Records.length;
 			Page.Total_Pages = Math.ceil(
 				Page.Total_Rows / Page.Total_Rows_Per_Page
 			);
@@ -527,12 +669,55 @@
 			});
 
 			createTable(Page.Current_Records);
+			document.querySelector("#stats").style.display = "none";
+			document.querySelector("#stats").style.overflowX = "hidden";
+			document.querySelector(".chart").style.overflowX = "hidden";
+			document.querySelector(".chart").style.height = "auto";
+			document.querySelector("#pie").style.display = "none";
+			document.querySelector("#pie").style.overflowX = "hidden";
+			document.querySelector(".chart2").style.overflowX = "hidden";
+			document.querySelector(".chart2").style.height = "auto";
 
 			const nxt = document.querySelector("button.next-btn");
 			const prev = document.querySelector("button.prev-btn");
 			prev.style.display = "none";
 			if (Page.Total_Pages === 1) nxt.style.display = "none";
 			if (Page.Total_Pages === 1) prev.style.display = "none";
+
+			if (searchFlag) {
+				if (activeColumn !== undefined) {
+					const heading = document.querySelectorAll(".heading");
+					const arr = [];
+					for (let head of heading) arr.push(head.textContent.trim());
+					if (arr.includes(activeColumn.textContent.trim())) {
+						let index = activeColumn.getAttribute("data-index");
+						let column = undefined;
+						for (let item of heading) {
+							if (item.getAttribute("data-index") == index) {
+								column = item;
+								break;
+							}
+						}
+						let icon = activeColumn.querySelector("i");
+						if (icon.classList.contains("fa-sort-down")) {
+							icon = column.querySelector("i");
+							icon.classList.remove("fa-sort-up");
+							icon.classList.add("fa-sort-down");
+							icon.classList.add("active");
+							sort(index, "descending");
+						} else {
+							icon = column.querySelector("i");
+							icon.classList.remove("fa-sort-down");
+							icon.classList.add("fa-sort-up");
+							icon.classList.add("active");
+							sort(index, "ascending");
+						}
+						column.classList.add("active");
+						activeColumn = column;
+						createChart(column.textContent.trim(), index);
+					}
+				}
+			}
 
 			for (let i = 0; i < Page.Total_Pages; i++) {
 				const page = document.createElement("li");
@@ -745,6 +930,7 @@
 		fileUpload();
 		deleteFile(filesDiv);
 		selectFile(filesDiv);
+		search();
 		nextPage();
 		previousPage();
 	} catch (error) {
