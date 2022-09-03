@@ -9,11 +9,13 @@
 
 The CSV File Reader is a Full Stack Application built using MongoDB, ExpressJS, NodeJS, EJS, Express Partials-Layouts, GulpJS.
 Users are able to upload, read, delete the files from the application.
-Front End & Back End Validation has been applied for uploading CSV Files less than 2MB.
+
 This website is completely Responsive across all the Devices.
 
 -  Users can Upload Files in CSV format.
--  Uploaded Files are displayed in the sidebar & can be Selected. The CSV Parser Reads the file and displays it in a Tabular format.
+-  Uploaded Files are displayed in the sidebar & can be Selected. 
+-  Front End & Back End Validation for uploading CSV Files less than 2MB.
+-  The CSV Parser Reads the file and displays it in a Tabular format.
 -  Users Receive Notifications for Deleting, Uploading the Files.
 -  Users can Delete the uploaded Files.
 -  Users can Search for the Keywords for a particular selected column in the Table.
