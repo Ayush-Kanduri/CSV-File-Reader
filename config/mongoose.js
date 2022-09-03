@@ -51,6 +51,8 @@ const EstablishConnection = async () => {
 			await Development();
 		} else if (env.name === "production" && env.deployment === "Heroku") {
 			await Production();
+		} else if (env.name === "production" && env.deployment === "other") {
+			await Production();
 		}
 		if (!db) console.log("Connection Error");
 	} catch (error) {

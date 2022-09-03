@@ -1,3 +1,4 @@
+//---------Sidebar---------
 #sidebar {
 	width: 15%;
 	min-width: 12rem;
@@ -7,6 +8,7 @@
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: center;
+	// ------------------------
 	// &::after {
 	// 	content: var(--url);
 	// 	position: absolute;
@@ -17,6 +19,7 @@
 	// 	width: 10%;
 	// 	height: 6%;
 	// }
+	// ------------------------
 	hr {
 		width: 85%;
 		border: 1px solid var(--primary-text-color);
@@ -27,6 +30,7 @@
 		margin-top: 2rem;
 		word-spacing: 0.1rem;
 	}
+	//---------Search Bar---------
 	.search {
 		width: 87%;
 		input {
@@ -38,12 +42,14 @@
 			}
 		}
 	}
+	//---------Uploaded Files---------
 	.files {
 		width: 100%;
 		height: 100%;
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
+		//---------Filenames---------
 		.filename {
 			&:last-child {
 				margin-bottom: 170px;
@@ -94,6 +100,7 @@
 	}
 }
 
+//---------Media Query---------
 @media screen and (max-width: 700px) {
 	#sidebar {
 		width: 100%;

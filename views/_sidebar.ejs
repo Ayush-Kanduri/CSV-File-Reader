@@ -6,9 +6,12 @@
 	style="--url: url(<%=assetPath('images/square-xmark-solid.svg')%>)"
 	data-close="<%=assetPath('images/square-xmark-solid.svg')%>"
 > -->
+
+<!-- Sidebar -->
 <section id="sidebar">
 	<h3>CSV File Reader</h3>
 	<hr />
+<!-- Search Input -->
 	<div
 		class="search input-group mb-5 mt-4"
 		data-bs-toggle="tooltip"
@@ -21,6 +24,7 @@
 			aria-label="Search"
 		/>
 	</div>
+<!-- Files -->
 	<div class="files">
 		<% for(let file of files){ %>
 		<div class="filename" data-id="<%= file.id %>">

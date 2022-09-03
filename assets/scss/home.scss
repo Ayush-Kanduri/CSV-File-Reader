@@ -1,10 +1,13 @@
+//---------Tool Tip---------
 .tooltip {
 	background-color: transparent;
+	//Tool Tip Arrow
 	.tooltip-arrow {
 		color: var(--sidebar-color);
 		background-color: transparent;
 		margin-left: 13px;
 	}
+	//Inner Tool Tip
 	.tooltip-inner {
 		margin-left: 14px;
 		background-color: var(--sidebar-color);
@@ -13,6 +16,7 @@
 	}
 }
 
+//---------Main Content---------
 #content {
 	width: 85%;
 	height: 100%;
@@ -21,6 +25,7 @@
 	justify-content: flex-start;
 	align-items: flex-start;
 	z-index: 50;
+	//Upload Form
 	.upload {
 		margin-top: 1rem;
 		width: 100%;
@@ -35,6 +40,7 @@
 			align-items: center;
 			width: 100%;
 			height: 100%;
+			//Submit Button
 			.submit {
 				background-color: var(--sidebar-color);
 				color: var(--primary-text-color);
@@ -85,6 +91,7 @@
 						border: none;
 					}
 				}
+				//Input Files
 				input[type="file"],
 				input[type="file"]::-webkit-file-upload-button {
 					cursor: pointer;
@@ -103,6 +110,7 @@
 			flex-wrap: wrap;
 		}
 	}
+	//---------Table---------
 	.table {
 		width: 90%;
 		margin: auto;
@@ -110,6 +118,7 @@
 		// overflow-x: scroll;
 		table {
 			width: 100%;
+			//Headings
 			.heading {
 				background-color: var(--sidebar-color);
 				transition: all 0.15s ease-in-out;
@@ -130,6 +139,7 @@
 				}
 			}
 		}
+		//Scrollbar
 		&::-webkit-scrollbar {
 			width: 20px;
 		}
@@ -141,6 +151,7 @@
 			box-shadow: inset 2px 2px 5px 0 rgba(#e8f9fd, 0.5);
 		}
 	}
+	//---------Pagination---------
 	.pagination {
 		width: 100%;
 		display: flex;
@@ -150,6 +161,7 @@
 		margin: auto;
 		gap: 2rem;
 		margin-top: 2rem;
+		//Next Previous Buttons
 		button {
 			display: none;
 			text-align: center;
@@ -166,6 +178,7 @@
 			}
 		}
 	}
+	//---------Page Numbers---------
 	.pages {
 		list-style: none;
 		display: flex;
@@ -205,6 +218,7 @@
 			}
 		}
 	}
+	//---------Header Titles---------
 	header {
 		width: 100%;
 		margin-top: 3rem;
@@ -215,6 +229,7 @@
 			width: 100%;
 		}
 	}
+	//---------Column Chart---------
 	.chart {
 		width: 90%;
 		max-height: 500px;
@@ -234,18 +249,7 @@
 				overflow: hidden;
 			}
 		}
-		#pie {
-			width: 100%;
-			height: 100%;
-			margin: auto;
-			justify-content: center;
-			align-items: flex-start;
-			display: none;
-			&::-webkit-scrollbar {
-				display: none;
-				overflow: hidden;
-			}
-		}
+		//Scrollbar
 		&::-webkit-scrollbar {
 			width: 20px;
 			display: none;
@@ -259,6 +263,7 @@
 			box-shadow: inset 2px 2px 5px 0 rgba(#e8f9fd, 0.5);
 		}
 	}
+	//---------Pie Chart---------
 	.chart2 {
 		width: 90%;
 		max-height: 500px;
@@ -276,10 +281,12 @@
 				display: none;
 				overflow: hidden;
 			}
+			//---------Media Query---------
 			@media (max-width: 700px) {
 				justify-content: flex-start;
 			}
 		}
+		//Scrollbar
 		&::-webkit-scrollbar {
 			width: 20px;
 			display: none;
@@ -295,6 +302,7 @@
 	}
 }
 
+//---------Media Query---------
 @media screen and (max-width: 700px) {
 	#content .chart {
 		width: 90%;

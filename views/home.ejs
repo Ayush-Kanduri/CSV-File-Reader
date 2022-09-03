@@ -5,8 +5,11 @@
 	src="<%= assetPath('js/home.js') %>"
 ></script>
 
+<!-- Sidebar -->
 <%- include('_sidebar.ejs') %>
+<!-- Main Content -->
 <section id="content">
+	<!-- Upload Form -->
 	<div class="upload">
 		<form
 			action="/upload"
@@ -30,6 +33,7 @@
 
 	<header><h2>Parsed Data</h2></header>
 
+	<!-- Table -->
 	<div class="table">
 		<!-- <table class="table table-dark table-hover">
 			<thead>
@@ -89,6 +93,7 @@
 		</table> -->
 	</div>
 
+	<!-- Pagination -->
 	<div class="pagination">
 		<button class="prev-btn">
 			<i class="fa-solid fa-arrow-left-long"></i>&emsp;Prev
@@ -98,14 +103,17 @@
 		</button>
 	</div>
 
+	<!-- Page Numbers -->
 	<ul class="pages"></ul>
 
 	<header style="margin-top: 5rem"><h2>Statistics</h2></header>
 
+	<!-- Column Chart -->
 	<div class="chart">
 		<div id="stats" class="stats"></div>
 	</div>
 
+	<!-- Pie Chart -->
 	<div class="chart2">
 		<div id="pie" class="stats"></div>
 	</div>

@@ -1,14 +1,17 @@
 {
 	try {
+		//Notification Object
 		const success = {
 			upload: "File has been uploaded successfully 🔥",
 			delete: "File has been deleted successfully 🔥",
 		};
+		//Notification Object
 		const error = {
 			upload: "Please select a CSV File of Size <= 2MB ❌",
 			delete: "Error in deleting the file ❌",
 			search: "Please select a column to search ❌",
 		};
+		//Page Controller Object
 		let Page = {
 			Current_Records: [],
 			Records: [],
@@ -18,11 +21,16 @@
 			Current_Page: 1,
 		};
 		const filesDiv = document.querySelector(".files");
+		//Selected File
 		let selectedFile = undefined;
+		//Deleted File
 		let deletedFile = undefined;
+		//Active Column
 		let activeColumn = undefined;
+		//Search Flag
 		let searchFlag = false;
 
+		//Function :: Displays the Tooltip
 		function tooltip() {
 			try {
 				const options = {
@@ -36,9 +44,11 @@
 					'[data-bs-toggle="tooltip"]'
 				);
 
+				//Tooltip Trigger
 				const tooltipList = [...tooltipTriggerList].map(
 					(ele) => new bootstrap.Tooltip(ele, options)
 				);
+				//Tooltip Styling
 				tooltipList.forEach((ele) => {
 					ele.tip.classList.add("tooltip");
 				});
@@ -47,26 +57,32 @@
 			}
 		}
 
+		//Function :: Handles the Searching Functionality
 		function search() {
 			const searchInput = document.querySelector(".form-control");
 
 			tooltip();
+			//Disables the Search Button
 			searchFlag = false;
 			searchInput.style.cursor = "not-allowed";
 			searchInput.disabled = true;
 
+			//On Search Input Change
 			searchInput.addEventListener("input", (e) => {
 				const searchValue = e.target.value;
+				//If the Search Value is Empty
 				if (searchValue === "") {
 					if (Page.Records.length !== 0) {
 						pagination();
 						tableSort();
 					}
 				}
+				//If there is no Active Column
 				if (activeColumn === undefined) {
 					notification("error", "search");
 					return;
 				}
+				//Get the Searched Records
 				searchFlag = true;
 				Page.Current_Records = Page.Records.filter((record) => {
 					const key = activeColumn.textContent.trim();
@@ -85,35 +101,43 @@
 					item.remove();
 				});
 
+				//Paginate the Searched Records
 				pagination(searchValue);
+				//Sort the Searched Records
 				tableSort();
 			});
 		}
 
+		//Function :: Displays the Notification Toasts
 		function notification(type, message) {
 			const toastContainer = document.querySelector(".toast-container");
 			const toast = toastContainer.querySelector(".toast").cloneNode(true);
 			const toastMessage = toast.querySelector(".toast-body strong");
 			toast.style.display = "block";
 
+			//Notification Selection
 			if (type === "error") toastMessage.textContent = error[message];
 			if (type === "success") toastMessage.textContent = success[message];
 
 			toastContainer.appendChild(toast);
 
+			//Notification Trigger
 			const Toast = new bootstrap.Toast(toast);
 			Toast.show();
 
 			setTimeout(() => toast.remove(), 6500);
 		}
 
+		//Function :: Deletes the File
 		function deleteFile(filesDiv) {
 			try {
 				const filename = filesDiv.querySelectorAll(".filename > span > i");
 				filename.forEach((icon) => {
+					//On Delete Icon Click
 					icon.addEventListener("click", async function (e) {
 						e.stopPropagation();
 						const id = e.target.getAttribute("data-id");
+						//AJAX :: Delete API Request - Deletes the File
 						const response = await fetch(`/delete/${id}`, {
 							method: "DELETE",
 						});
@@ -122,6 +146,7 @@
 							notification("success", "delete");
 							e.target.parentElement.parentElement.remove();
 							deletedFile = data.filename;
+							//Deletes the Table
 							deleteTable();
 						} else {
 							notification("error", "delete");
@@ -134,15 +159,25 @@
 			}
 		}
 
+		//Function :: Deletes the Table, Charts, Pagination, Sorting and Search Results
 		function deleteTable() {
 			try {
 				const btns = document.querySelectorAll(".pagination button");
 				const searchInput = document.querySelector(".form-control");
 				const table = document.querySelector("table");
+				//If the selected file is deleted
 				if (deletedFile === selectedFile) {
+					//Deletes the Table
 					if (table) table.remove();
-					btns.forEach((item) => (item.style.display = "none"));
 					document.querySelector(".table").style.overflowX = "hidden";
+
+					//Deletes the Pagination
+					btns.forEach((item) => (item.style.display = "none"));
+					document.querySelectorAll(".pages li").forEach(function (item) {
+						item.remove();
+					});
+
+					//Deletes the Charts
 					document.querySelectorAll("#pie > *").forEach((item) => {
 						item.remove();
 					});
@@ -154,6 +189,7 @@
 					document.querySelector(".chart2").style.height = "auto";
 					document.querySelector(".chart2").style.overflowX = "hidden";
 
+					//Resets the Page Controller Object
 					Page = {
 						Current_Records: [],
 						Records: [],
@@ -163,12 +199,12 @@
 						Current_Page: 1,
 					};
 
+					//Resets the Variables
 					selectedFile = undefined;
 					deletedFile = undefined;
 					activeColumn = undefined;
-					document.querySelectorAll(".pages li").forEach(function (item) {
-						item.remove();
-					});
+
+					//Disables the Search Input
 					searchInput.value = "";
 					searchInput.style.cursor = "not-allowed";
 					searchInput.disabled = true;
@@ -179,26 +215,34 @@
 			}
 		}
 
+		//Function :: Selects the File from the Sidebar
 		function selectFile(filesDiv) {
 			filesDiv.querySelectorAll(".filename").forEach(function (item) {
+				//On File Click
 				item.addEventListener("click", async function (e) {
 					e.stopPropagation();
+					//Activates the File Selection
 					filesDiv.querySelectorAll(".filename").forEach(function (file) {
 						if (file !== item) file.classList.remove("active");
 						if (file === item) file.classList.add("active");
 					});
 					try {
 						const id = item.getAttribute("data-id");
+						//AJAX :: GET API Request - Retrieves the File
 						const response = await fetch(`/read/${id}`, {
 							method: "GET",
 						});
 						const data = await response.json();
 						if (data.response !== "success") return;
 						deletedFile = selectedFile;
+						//Deletes the Table
 						deleteTable();
+						//Sets the Page Records & Selects the File
 						Page.Records = data.data;
 						selectedFile = data.filename;
+						//Paginates the Records
 						pagination();
+						//Sorts the Records
 						tableSort();
 					} catch (error) {
 						console.log(error);
@@ -207,11 +251,13 @@
 			});
 		}
 
+		//Function :: Creates the Table
 		function createTable(records) {
 			const tableDiv = document.querySelector(".table");
 			const chart1 = document.querySelector(".chart");
 			const chart2 = document.querySelector(".chart2");
 
+			//If the Table is not created
 			if (records.length === 0) {
 				tableDiv.style.display = "none";
 				tableDiv.style.overflowX = "hidden";
@@ -222,7 +268,9 @@
 				chart1.style.height = "auto";
 				chart2.style.height = "auto";
 				return;
-			} else {
+			}
+			//If the Table is already created
+			else {
 				tableDiv.style.display = "initial";
 				tableDiv.style.overflowX = "scroll";
 				chart1.style.display = "initial";
@@ -237,6 +285,7 @@
 			let headingContent = ``;
 			let bodyContent = ``;
 
+			//Creates the Table Headings
 			for (let heading in headingsArray) {
 				headingContent += `
 				<th scope="col" class="heading" data-index=${heading}>
@@ -244,6 +293,7 @@
 				</th>`;
 			}
 
+			//Creates the Table Body
 			for (let record of records) {
 				let data = ``;
 				for (let key in record) {
@@ -256,6 +306,7 @@
 				</tr>`;
 			}
 
+			//Creates the Table
 			let table = `
 			<table class="table table-dark table-hover">
 				<thead>
@@ -273,9 +324,11 @@
 				item.style.display = "initial";
 			});
 
+			//Displays the Table
 			tableDiv.innerHTML = table;
 		}
 
+		//Function :: Uploads the File
 		function fileUpload() {
 			let END = false;
 			let records = [];
@@ -285,6 +338,7 @@
 			const file = document.querySelector(".upload-wrapper > input");
 			const form = document.querySelector(".upload > form");
 
+			//On File Upload
 			file.addEventListener("change", handleFiles, false);
 			function handleFiles(e) {
 				const fileList = this.files; // e.target.files;
@@ -292,11 +346,13 @@
 				btn.classList.add("active");
 			}
 
+			//On Form Submit
 			form.addEventListener("submit", uploadFiles, false);
 			async function uploadFiles(e) {
 				e.preventDefault();
 				e.stopPropagation();
 
+				//Reports the Error
 				if (file === null || file === undefined) {
 					notification("error", "upload");
 					return;
@@ -310,9 +366,9 @@
 					return;
 				}
 
-				//File Type must be CSV
+				//FRONTEND VALIDATION :: File Type must be CSV
 				if (file.files[0].type.match("text/csv")) {
-					//File Size must be less than equal to 2MB
+					//FRONTEND VALIDATION :: File Size must be less than equal to 2MB
 					if (file.files[0].size <= 1024 * 1024 * 2) {
 						notification("success", "upload");
 						try {
@@ -321,16 +377,20 @@
 							e.target.reset();
 							btn.textContent = "Choose File";
 							btn.classList.remove("active");
+							//AJAX :: POST Request - Uploads the File
 							const response = await fetch("/upload", {
 								method: "POST",
 								body: formData,
 							});
 							const data = await response.json();
 
+							//AJAX :: Adds the File Name to the Sidebar
 							filesDiv.innerHTML += `<div class="filename" data-id="${data.data._id}">
 							<span>${data.data.name}&emsp;<i class="fa-solid fa-trash" data-id='${data.data._id}'></i></span></div>`;
 
+							//AJAX :: Attaches the Delete Event Listener to the File
 							deleteFile(filesDiv);
+							//AJAX :: Attaches the Select Event Listener to the File
 							selectFile(filesDiv);
 						} catch (error) {
 							console.log(error);
@@ -343,11 +403,13 @@
 			}
 		}
 
+		//Function :: Creates the Google Charts
 		function createChart(heading, index) {
 			const Frequency = new Map();
 			const Percentage = new Map();
 			let sum = 0;
 
+			//Initializes the Frequency Hash Map
 			for (let record of Page.Records) {
 				if (Frequency.has(record[heading])) {
 					Frequency.set(
@@ -359,22 +421,27 @@
 				}
 			}
 
+			//Initializes & Loads the Google Charts
 			google.charts.load("current", { packages: ["corechart", "bar"] });
 			google.charts.setOnLoadCallback(drawChart);
 			google.charts.setOnLoadCallback(drawPieChart);
 
 			for (const value of Frequency.values()) sum += value;
 
+			//Initializes the Percentage Hash Map
 			for (let [key, value] of Frequency) {
 				Percentage.set(key, (Number(value) * 100) / sum);
 			}
 
+			//Creates the Column Chart
 			function drawChart() {
+				//Creates the Data Table
 				const data = new google.visualization.arrayToDataTable([
 					[heading, "Percentage"],
 					...Percentage,
 				]);
 
+				//Styling Options
 				const options = {
 					width: 800,
 					height: 450,
@@ -460,16 +527,20 @@
 
 				const div = document.getElementById("stats");
 
+				//Creates the Chart
 				const chart = new google.charts.Bar(div);
 				chart.draw(data, google.charts.Bar.convertOptions(options));
 			}
 
+			//Creates the Pie Chart
 			function drawPieChart() {
+				//Creates the Data Table
 				const data = google.visualization.arrayToDataTable([
 					[heading, "Percentage"],
 					...Percentage,
 				]);
 
+				//Styling Options
 				const options = {
 					width: 800,
 					height: 450,
@@ -521,6 +592,7 @@
 
 				const div = document.getElementById("pie");
 
+				//Creates the Chart
 				const chart = new google.visualization.PieChart(div);
 				chart.draw(data, options);
 			}
@@ -591,21 +663,26 @@
 			tbody.append(...sortedRows);
 		}
 
+		//Function :: Sorts the table
 		function tableSort() {
 			try {
 				const heading = document.querySelectorAll(".heading");
 				const Columns = new Map();
 
 				heading.forEach(function (item) {
+					//Initializes the Column Map
 					if (!Columns.has(item.textContent.trim())) {
 						Columns.set(item.textContent.trim(), false);
 					}
+					//On Clicking the Column Heading
 					item.addEventListener("click", function () {
+						//Enables the search bar
 						const searchInput = document.querySelector(".form-control");
 						searchInput.style.cursor = "initial";
 						searchInput.disabled = false;
 						searchFlag = true;
 
+						//Activates the Heading
 						for (let head of heading) head.classList.remove("active");
 						this.classList.add("active");
 						for (let head of heading) {
@@ -613,21 +690,32 @@
 						}
 						const icon = item.querySelector("i");
 						const index = item.getAttribute("data-index");
+
+						//Creates the Chart
 						createChart(item.textContent.trim(), index);
+
+						//If the Active Column is clicked once
 						if (!Columns.get(item.textContent.trim())) {
 							Columns.set(item.textContent.trim(), true);
+							//If the Column is not active
 							if (activeColumn === undefined) {
 								icon.classList.add("active");
 								sort(index, "ascending");
+								//Activates the Column
 								activeColumn = this;
 								return;
 							}
 							icon.classList.add("active");
 							activeColumn = this;
-						} else {
+						}
+						//If the Active Column is clicked twice or more
+						else {
 							icon.classList.add("active");
+							//Activates the Column
 							activeColumn = this;
 						}
+
+						//Sorts the Table
 						if (icon.classList.contains("fa-sort-down")) {
 							sort(index, "ascending");
 							icon.classList.replace("fa-sort-down", "fa-sort-up");
@@ -642,11 +730,14 @@
 			}
 		}
 
+		//Function :: Paginates the table data
 		function pagination(searchValue = "") {
 			let start = 0;
 			let end = Page.Total_Rows_Per_Page;
 
+			//If the search bar is active
 			if (searchFlag) {
+				//Sets the Current Records as the Search Results
 				Page.Current_Records = Page.Records.filter((record) => {
 					const key = activeColumn.textContent.trim();
 					return record[key]
@@ -654,7 +745,10 @@
 						.includes(searchValue.toLowerCase());
 				});
 				Page.Total_Rows = Page.Current_Records.length;
-			} else {
+			}
+			//If the search bar is not active
+			else {
+				//Sets the Current Records as the Per Page Records
 				Page.Current_Records = Page.Records.slice(start, end);
 				Page.Total_Rows = Page.Records.length;
 			}
@@ -663,11 +757,13 @@
 				Page.Total_Rows / Page.Total_Rows_Per_Page
 			);
 
+			//Removes the existing Pagination
 			const pages = document.querySelector(".pages");
 			pages.querySelectorAll("li").forEach(function (item) {
 				item.remove();
 			});
 
+			//Creates the Table
 			createTable(Page.Current_Records);
 			document.querySelector("#stats").style.display = "none";
 			document.querySelector("#stats").style.overflowX = "hidden";
@@ -678,14 +774,18 @@
 			document.querySelector(".chart2").style.overflowX = "hidden";
 			document.querySelector(".chart2").style.height = "auto";
 
+			//Removes the Buttons
 			const nxt = document.querySelector("button.next-btn");
 			const prev = document.querySelector("button.prev-btn");
 			prev.style.display = "none";
 			if (Page.Total_Pages === 1) nxt.style.display = "none";
 			if (Page.Total_Pages === 1) prev.style.display = "none";
 
+			//If the search bar is active
 			if (searchFlag) {
+				//If the Column is active
 				if (activeColumn !== undefined) {
+					//Create the Pagination
 					const heading = document.querySelectorAll(".heading");
 					const arr = [];
 					for (let head of heading) arr.push(head.textContent.trim());
@@ -720,6 +820,7 @@
 			}
 
 			for (let i = 0; i < Page.Total_Pages; i++) {
+				//Create the Pagination
 				const page = document.createElement("li");
 				page.classList.add("page");
 				page.setAttribute("data-page", i + 1);
@@ -727,24 +828,35 @@
 				let p = document.createElement("p");
 				p.textContent = i + 1;
 				page.appendChild(p);
+				//Single Page
 				if (Page.Total_Pages === 1) {
 					pages.appendChild(page);
 					return;
 				}
+
+				//On Clicking Page Number
 				page.addEventListener("click", function () {
 					for (let item of document.querySelectorAll(".page")) {
 						item.classList.remove("active");
 					}
+
+					//Activates the Page Number
 					page.classList.add("active");
+
+					//Page Number Navigation
 					Page.Current_Page = Number(this.querySelector("p").textContent);
 					let start = (Page.Current_Page - 1) * Page.Total_Rows_Per_Page;
 					let end = Page.Current_Page * Page.Total_Rows_Per_Page;
 					Page.Current_Records = Page.Records.slice(start, end);
 
+					//Creates the Table
 					createTable(Page.Current_Records);
+					//Sorts the Table
 					tableSort();
 
+					//If the Column is active
 					if (activeColumn !== undefined) {
+						//Create the Pagination
 						const heading = document.querySelectorAll(".heading");
 						const arr = [];
 						for (let head of heading) arr.push(head.textContent.trim());
@@ -777,6 +889,7 @@
 						}
 					}
 
+					//Visibility of the Buttons
 					if (Page.Current_Page === Page.Total_Pages) {
 						nxt.style.display = "none";
 					} else if (Page.Current_Page === 1) {
@@ -786,27 +899,36 @@
 						prev.style.display = "inline-block";
 					}
 				});
+				//Appends the Page Numbers
 				pages.appendChild(page);
 			}
 		}
 
+		//Function :: Next Button Pagination Navigation
 		function nextPage() {
 			const nxt = document.querySelector(".pagination > button.next-btn");
+			//Base Case
 			if (Page.Total_Pages === 1) nxt.style.display = "none";
 			if (Page.Current_Page === Page.Total_Pages) nxt.style.display = "none";
 
+			//On Clicking Next Button
 			nxt.addEventListener("click", function (e) {
 				e.preventDefault();
 				e.stopPropagation();
+				//Moving Forward
 				if (Page.Current_Page < Page.Total_Pages) {
 					let start = Page.Current_Page * Page.Total_Rows_Per_Page;
 					let end = start + Page.Total_Rows_Per_Page;
 
 					Page.Current_Records = Page.Records.slice(start, end);
+					//Creates the Table
 					createTable(Page.Current_Records);
+					//Sorts the Table
 					tableSort();
 
+					//If the Column is active
 					if (activeColumn !== undefined) {
+						//Create the Pagination
 						const heading = document.querySelectorAll(".heading");
 						const arr = [];
 						for (let head of heading) arr.push(head.textContent.trim());
@@ -841,6 +963,7 @@
 
 					Page.Current_Page++;
 
+					//Visibility of the Buttons & Page Numbers
 					for (let item of document.querySelectorAll(".page")) {
 						item.classList.remove("active");
 					}
@@ -858,14 +981,18 @@
 			});
 		}
 
+		//Function :: Previous Button Pagination Navigation
 		function previousPage() {
 			const prev = document.querySelector(".pagination > button.prev-btn");
+			//Base Case
 			if (Page.Total_Pages === 1) prev.style.display = "none";
 			if (Page.Current_Page === 1) prev.style.display = "none";
 
+			//On Clicking Previous Button
 			prev.addEventListener("click", function (e) {
 				e.preventDefault();
 				e.stopPropagation();
+				//Moving Backward
 				if (Page.Current_Page > 1) {
 					Page.Current_Page--;
 
@@ -880,10 +1007,14 @@
 					let end = start - Page.Total_Rows_Per_Page;
 
 					Page.Current_Records = Page.Records.slice(end, start);
+					//Creates the Table
 					createTable(Page.Current_Records);
+					//Sorts the Table
 					tableSort();
 
+					//If the Column is active
 					if (activeColumn !== undefined) {
+						//Create the Pagination
 						const heading = document.querySelectorAll(".heading");
 						const arr = [];
 						for (let head of heading) arr.push(head.textContent.trim());
@@ -916,6 +1047,7 @@
 						}
 					}
 
+					//Visibility of the Buttons & Page Numbers
 					if (Page.Current_Page === 1) {
 						prev.style.display = "none";
 						return;

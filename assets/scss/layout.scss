@@ -1,5 +1,7 @@
+//---------Imports---------
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Red+Hat+Display:wght@300;400;500&display=swap");
 
+//---------General Styling---------
 * {
 	-webkit-user-select: none;
 	-webkit-user-drag: none;
@@ -14,6 +16,8 @@
 	box-sizing: border-box;
 	font-family: "Poppins", sans-serif;
 }
+
+//---------Root Styling :: CSS Variables---------
 :root {
 	--background-color: #ff1e00;
 	--sidebar-color: #000000;
@@ -22,6 +26,8 @@
 	--hover-color: #59ce8f;
 	--text-family: "Red Hat Display", sans-serif;
 }
+
+//---------Body---------
 body {
 	overflow-x: hidden;
 	&::-webkit-scrollbar {
@@ -29,6 +35,8 @@ body {
 		overflow: hidden;
 	}
 }
+
+//---------Heading Titles---------
 h1,
 h2,
 h3,
@@ -43,6 +51,8 @@ h3 {
 	font-size: 1.4rem;
 	word-break: break-all;
 }
+
+//---------Main Content Body---------
 main {
 	background-color: var(--background-color);
 	width: 100vw;
@@ -56,6 +66,7 @@ main {
 	}
 }
 
+//---------Media Query---------
 @media screen and (max-width: 700px) {
 	main {
 		flex-direction: column;

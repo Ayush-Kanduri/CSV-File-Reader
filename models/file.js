@@ -50,15 +50,13 @@ const storage = multer.diskStorage({
 	},
 });
 
-//Attaching the Disk Storage Engine to the Multer
-//Static Function
+//Static Function :: Attaching the Disk Storage Engine to the Multer
 fileSchema.statics.uploadedFile = multer({
 	storage: storage,
 	fileFilter: fileTypeFilter,
 }).single("file");
 
-//FILE_PATH should be available globally in the User Model using this function() & should tell the controller where the path would be.
-//Static Function
+//Static Variable :: FILE_PATH should be available globally in the FILE Model using this VARIABLE & should tell the controller where the path would be.
 fileSchema.statics.filePath = FILE_PATH;
 
 //Create a Model/Collection to populate the data with the same name for the schema in the DB

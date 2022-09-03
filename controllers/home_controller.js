@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const { parse } = require("csv-parse");
 
-//Displays the home page
+//Displays the Home Page
 module.exports.homepage = async (req, res) => {
 	try {
 		let files = await File.find({});
@@ -19,7 +19,9 @@ module.exports.homepage = async (req, res) => {
 	}
 };
 
+//Uploads the File to the Server Uploads & Database
 module.exports.upload = async (req, res) => {
+	// ----------------------------------------------------------------------------
 	// fieldname: 'file' --> name of the input field in the form
 	// originalname: 'programs.csv' --> name of the file on the user's computer
 	// encoding: '7bit' --> file encoding
@@ -28,18 +30,25 @@ module.exports.upload = async (req, res) => {
 	// filename: 'abc' --> new name of the file
 	// path: 'XYZ/abc' --> absolute path of the file
 	// size: 60 --> size of the file in bytes
+	// ----------------------------------------------------------------------------
+
+	//If there is no file uploaded, then delete existing files from the server
 	try {
 		const file = await File.find({});
+		//If there are no files in the Database
 		if (file.length === 0) {
+			//Read all Files in the Server Uploads
 			const files = await fs.promises.readdir(
 				path.join(__dirname, "..", File.filePath)
 			);
+			//Delete existing Files from the Server Uploads
 			for (let file of files) {
 				fs.unlinkSync(path.join(__dirname, "..", File.filePath, file));
 			}
 		}
 	} catch (error) {
 		console.log(error);
+		//Return the Error
 		return res.status(500).json({
 			message: "Internal Server Error",
 			error: error.message,
@@ -48,9 +57,10 @@ module.exports.upload = async (req, res) => {
 
 	try {
 		let file = {};
-		//Call the File Model's Static Method to upload the File.
+		//Call the FILE Model's Static Method to upload the File.
 		File.uploadedFile(req, res, async (err) => {
 			let error = "Error in uploading the file!";
+			//Return the Error
 			if (err) {
 				console.log(error);
 				return res.status(500).json({
@@ -59,12 +69,15 @@ module.exports.upload = async (req, res) => {
 				});
 			}
 
+			//Create the File in the Database
 			file = await File.create({
 				name: req.file.originalname,
 				path: File.filePath + "/" + req.file.filename,
 				status: false,
 			});
+			//Call the FILE Model's Static Global Variable to get the File Path.
 
+			//Return the Response
 			return res.status(200).json({
 				message: "Upload Successful!",
 				data: file,
@@ -72,6 +85,7 @@ module.exports.upload = async (req, res) => {
 		});
 	} catch (error) {
 		console.log(error);
+		//Return the Error
 		return res.status(500).json({
 			message: "Internal Server Error",
 			error: error.message,
@@ -79,11 +93,13 @@ module.exports.upload = async (req, res) => {
 	}
 };
 
+//Deletes the File from the Server Uploads & Database
 module.exports.delete = async (req, res) => {
 	try {
 		let file = await File.findById(req.params.id);
 		let filename = file.name;
 
+		//If the File is not found in the Database
 		if (!file) {
 			return res.status(404).json({
 				message: "File not found!",
@@ -102,6 +118,7 @@ module.exports.delete = async (req, res) => {
 		//Delete the File from the Database
 		await file.remove();
 
+		//Return the Response
 		return res.status(200).json({
 			message: "File Deleted Successfully!",
 			data: "success",
@@ -109,6 +126,7 @@ module.exports.delete = async (req, res) => {
 		});
 	} catch (error) {
 		console.log(error);
+		//Return the Error
 		return res.status(500).json({
 			message: "Internal Server Error",
 			error: error.message,
@@ -116,6 +134,7 @@ module.exports.delete = async (req, res) => {
 	}
 };
 
+//Reads the File from the Server Uploads & Database
 module.exports.read = async (req, res) => {
 	try {
 		const id = req.params.id;
@@ -123,7 +142,7 @@ module.exports.read = async (req, res) => {
 		const filePath = path.join(__dirname, "..", file.path);
 		const records = [];
 
-		//Initialize the parser
+		//Initialize the CSV Parser
 		const parser = parse(
 			{
 				delimiter: ",",
@@ -131,6 +150,7 @@ module.exports.read = async (req, res) => {
 				//columns: false, --> Array of Arrays
 			},
 			(err, data) => {
+				//Return the Error
 				if (err) {
 					console.log(err);
 					return res.status(500).json({
@@ -138,15 +158,15 @@ module.exports.read = async (req, res) => {
 						error: err.message,
 					});
 				}
-				//Push the Data to the Array
+				//Push the Data into the Array
 				records.push(data);
 			}
 		);
 
-		//Read the file
+		//Read the CSV File
 		fs.createReadStream(filePath).pipe(parser);
 
-		//Wait for the Parser to finish
+		//Wait for the Parser to finish the work
 		await new Promise((resolve) => {
 			parser.on("finish", () => {
 				resolve();
@@ -173,6 +193,7 @@ module.exports.read = async (req, res) => {
 	}
 };
 
+// ---------------------------------------------------------------
 // Array of Arrays //
 //---------------
 //Heading Columns
@@ -200,3 +221,4 @@ module.exports.read = async (req, res) => {
 // 	"",
 // 	""
 // ],
+// ---------------------------------------------------------------
