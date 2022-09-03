@@ -1,0 +1,11 @@
+{
+	"DEVELOPMENT_DB": "local database URI",
+	"DEVELOPMENT_DB_NAME": "local database name",
+	"DEVELOPMENT_DEPLOYMENT": "local",
+	"DEVELOPMENT_ASSET_PATH": "./assets",
+
+	"DB": "remote database URI",
+	"DB_NAME": "remote database name",
+	"DEPLOYMENT": "other",
+	"ASSET_PATH": "./public/assets"
+}
