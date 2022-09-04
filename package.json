@@ -3,12 +3,11 @@
 	"version": "1.0.0",
 	"description": "This project is a CSV File Reader",
 	"main": "index.js",
-	"engines": {
-		"node": "14.x"
-	},
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "node index.js"
+		"start": "node index.js",
+		"prod_start": "SET NODE_ENV=production & nodemon index.js",
+		"dev_start": "SET NODE_ENV=development & nodemon index.js"
 	},
 	"repository": {
 		"type": "git",
