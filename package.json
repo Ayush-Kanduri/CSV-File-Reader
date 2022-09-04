@@ -8,8 +8,7 @@
 	},
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "SET NODE_ENV=development & node index.js",
-		"prod_start": "SET NODE_ENV=production & nodemon index.js"
+		"start": "node index.js"
 	},
 	"repository": {
 		"type": "git",

@@ -3,3 +3,4 @@ node_modules/
 dump.rdb
 production_logs/
 .vscode/
+.vercel
