@@ -27,4 +27,7 @@ ENV_FORMAT.json
 Folder_Structure.txt
 gulpfile.js
 index.js
+package-lock.json
+package.json
 README.md
+vercel.json
