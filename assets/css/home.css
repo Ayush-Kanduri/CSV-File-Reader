@@ -197,16 +197,6 @@
       #content .chart .stats::-webkit-scrollbar {
         display: none;
         overflow: hidden; }
-    #content .chart #pie {
-      width: 100%;
-      height: 100%;
-      margin: auto;
-      justify-content: center;
-      align-items: flex-start;
-      display: none; }
-      #content .chart #pie::-webkit-scrollbar {
-        display: none;
-        overflow: hidden; }
     #content .chart::-webkit-scrollbar {
       width: 20px;
       display: none;
